@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "stories": [
+    {
+      "id": "BHFL-001",
+      "title": "Non-Logged-In Home Page",
+      "details": {
+        "qa": "../Users/MunishVira/Downloads/BHFL_Non_Logged_User_Journey_Module_Test_Cases (1).xlsx",
+        "brd": "BRD_NonLoggedIn_Home_Page.docx",
+        "figma": "8U75ofxf1zz5vVAzj1sqMU/2:937",
+        "sheetName": "Sheet1, Sheet2"
+      },
+      "timeline": [
+        {
+          "seq": 1,
+          "t": "2026-11-06T07:03:35.435Z",
+          "event": "story.added",
+          "story": "BHFL-001",
+          "actor": "Munish Vira",
+          "tool": "tdd-spec-generator 3.0.4",
+          "data": {
+            "title": "Non-Logged-In Home Page",
+            "mode": "Fresh",
+            "details": {
+              "qa": "../Users/MunishVira/Downloads/BHFL_Non_Logged_User_Journey_Module_Test_Cases (1).xlsx"
+            }
+          },
+          "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+          "hash": "101728c5aa893d45a4f0c24733a4e9c77b58d305bcf4ebcee4f273133c53ddea"
+        },
+        {
+          "seq": 2,
+          "t": "2026-11-06T07:03:35.462Z",
+          "event": "cases.imported",
+          "story": "BHFL-001",
+          "actor": "Munish Vira",
+          "tool": "tdd-spec-generator 3.0.4",
+          "data": {
+            "source": "../Users/MunishVira/Downloads/BHFL_Non_Logged_User_Journey_Module_Test_Cases (1).xlsx",
+            "rowsRead": 273,
+            "appended": 273,
+            "alreadyPresent": [],
+            "sharedWith": [],
+            "adoptedFromUnassigned": [],
+            "renamedTcIds": [],
+            "casesInSpecByStory": {
+              "BHFL-001": 273
+            }
+          },
+          "prev": "101728c5aa893d45a4f0c24733a4e9c77b58d305bcf4ebcee4f273133c53ddea",
+          "hash": "8c9bf4a4f145d2925a1473367a111e28d1f985e5380bde37551f82abc1b94b6e"
+        },
+        {
+          "seq": 3,
+          "t": "2026-11-06T07:07:27.363Z",
+          "event": "story.updated",
+          "story": "BHFL-001",
+          "actor": "Munish Vira",
+          "tool": "tdd-spec-generator 3.0.4",
+          "data": {
+            "addedDetails": {
+              "brd": "BRD_NonLoggedIn_Home_Page.docx",
+              "figma": "8U75ofxf1zz5vVAzj1sqMU/2:937",
+              "sheetName": "Sheet1, Sheet2"
+            }
+          },
+          "prev": "8c9bf4a4f145d2925a1473367a111e28d1f985e5380bde37551f82abc1b94b6e",
+          "hash": "4bfee566cc41a41a997fd32b8741c3bee54db7d0a27ae07e2d07979e4b5bd55b"
+        },
+        {
+          "seq": 4,
+          "t": "2026-11-06T07:20:46.406Z",
+          "event": "cases.imported",
+          "story": "BHFL-001",
+          "actor": "Munish Vira",
+          "tool": "tdd-spec-generator 3.0.4",
+          "data": {
+            "source": "../Users/MunishVira/Downloads/BHFL_Non_Logged_User_Journey_Module_Test_Cases (1).xlsx [sheet: Sheet2]",
+            "rowsRead": 71,
+            "appended": 71,
+            "alreadyPresent": [],
+            "sharedWith": [],
+            "adoptedFromUnassigned": [],
+            "renamedTcIds": [],
+            "casesInSpecByStory": {
+              "BHFL-001": 71
+            }
+          },
+          "prev": "4bfee566cc41a41a997fd32b8741c3bee54db7d0a27ae07e2d07979e4b5bd55b",
+          "hash": "5c903772d3c0231d67839097e032e2442646af7d62ee0491ca30b145dd48074b"
+        },
+        {
+          "seq": 5,
+          "t": "2026-11-06T07:50:56.903Z",
+          "event": "code.implemented",
+          "story": "BHFL-001",
+          "actor": "Munish Vira",
+          "tool": "tdd-spec-generator 3.0.4",
+          "data": {
+            "tasks": "T001,T002,T003,T004,T005,T006,T007,T008,T010,T011,T012,T013,T020,T021,T030,T040,T041,T050,T051,T090,T091,T092,T095"
+          },
+          "prev": "5c903772d3c0231d67839097e032e2442646af7d62ee0491ca30b145dd48074b",
+          "hash": "f660a5120b8f7bbf9df41d581abee77eadbe1b74b44beaa2b1921908351e7a89"
+        }
+      ]
+    }
+  ],
+  "timeline": []
+}

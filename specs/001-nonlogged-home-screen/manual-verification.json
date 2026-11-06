@@ -1,0 +1,8 @@
+{
+  "HOME_CONTACT_TC_003": "manual - needs screen reader / device to verify focus return to tile",
+  "HOME_NET_TC_003": "manual - WebView error state belongs to shared WebView module; only route hand-off here",
+  "HOME_NET_TC_007": "manual - visual check on 320x568 device/emulator (ScrollView reachability unit-checked in T011)",
+  "HOME_NET_TC_009": "manual - device performance measurement, target 2 s after splash on a mid-range device (PERF-1)",
+  "HOME_NET_TC_010": "manual - memory profiling on device",
+  "HOME_NET_TC_011": "manual - needs both platforms side by side"
+}
