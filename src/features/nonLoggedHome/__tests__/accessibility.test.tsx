@@ -52,7 +52,16 @@ describe('accessibility', () => {
     const { toJSON } = renderHome();
     await act(async () => undefined);
     const json = JSON.stringify(toJSON());
-    const order = ['account, on the go!', 'Pay Now', 'Our Products', 'Track Application', 'FAQs', 'Offers', 'Contact Us', 'Login'];
+    const order = [
+      'account, on the go!',
+      '"accessibilityLabel":"Pay Now"',
+      '"accessibilityLabel":"Our Products"',
+      '"accessibilityLabel":"Track Application"',
+      '"accessibilityLabel":"FAQs"',
+      '"accessibilityLabel":"Offers"',
+      '"accessibilityLabel":"Contact Us"',
+      '"accessibilityLabel":"Login"',
+    ];
     const positions = order.map(label => json.indexOf(label));
     positions.forEach(p => expect(p).toBeGreaterThan(-1));
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);

@@ -17,10 +17,10 @@ import {
 import { useFaqFlow } from './useFaqFlow';
 
 /** Pay Now params: URL from build config; a missing portal URL is passed as null, never thrown on. */
-export function buildPayNowParams() {
+export function buildPayNowParams(portalBaseUrl: string = ENV.portalBaseUrl) {
   return {
     title: PAY_NOW_TITLE,
-    url: ENV.portalBaseUrl ? `${ENV.portalBaseUrl}${PAY_NOW_PATH}` : null,
+    url: portalBaseUrl ? `${portalBaseUrl}${PAY_NOW_PATH}` : null,
     loader: false,
   };
 }

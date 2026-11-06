@@ -12,11 +12,13 @@ export function useVersionGate() {
 
   useEffect(() => {
     let alive = true;
-    checkAppVersion().then(result => {
-      if (alive) {
-        setOutcome(result);
-      }
-    });
+    checkAppVersion()
+      .then(result => {
+        if (alive) {
+          setOutcome(result);
+        }
+      })
+      .catch(() => undefined); // fail open: never lock the user out (BR-9)
     return () => {
       alive = false;
     };

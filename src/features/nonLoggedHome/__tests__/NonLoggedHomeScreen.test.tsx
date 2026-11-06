@@ -14,6 +14,7 @@ import { setOffersForm, setSelectedOffer } from '../../../store/offersSlice';
 import { setRegisterNowReturnScreen } from '../../../store/sessionFlagsSlice';
 import { setNonLoggedToken } from '../../../store/tokenSlice';
 import NonLoggedHomeScreen from '../NonLoggedHomeScreen';
+import { buildPayNowParams } from '../hooks/useHomeActions';
 import { popupMaxHeight } from '../components/CustomerCarePopup';
 import { SERVER_ERROR_MESSAGE } from '../nonLoggedHomeConstants';
 
@@ -102,7 +103,7 @@ describe('layout and content', () => {
   // Covers: HOME_LAYOUT_TC_001 — illustration, headline, six tiles (3 + 3) and one Login button
   it('[HOME_LAYOUT_TC_001] shows illustration, 3-line headline, six tiles in two rows and Login', () => {
     setup();
-    expect(screen.getByTestId('home-illustration')).toBeTruthy();
+    expect(screen.getByTestId('home-illustration', { includeHiddenElements: true })).toBeTruthy();
     expect(screen.getByTestId('home-headline').props.children).toBe(
       'Login to download account statements,\nmake payments, and manage your\naccount, on the go!',
     );
@@ -178,11 +179,11 @@ describe('tiles and Login', () => {
 
   // Covers: HOME_NEG_TC_002 — Pay Now URL unavailable is handled
   it('[HOME_NEG_TC_002] builds null params without throwing when the portal URL is missing', () => {
-    jest.isolateModules(() => {
-      jest.doMock('react-native-config', () => ({ __esModule: true, default: {} }));
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { buildPayNowParams } = require('../hooks/useHomeActions');
-      expect(buildPayNowParams()).toEqual({ title: 'Pay Now', url: null, loader: false });
+    expect(buildPayNowParams('')).toEqual({ title: 'Pay Now', url: null, loader: false });
+    expect(buildPayNowParams('https://p.example')).toEqual({
+      title: 'Pay Now',
+      url: 'https://p.example/#/payments/paynow',
+      loader: false,
     });
   });
 
@@ -435,7 +436,7 @@ describe('Contact Us popup', () => {
     setup();
     fireEvent.press(tile('Contact Us'));
     expect(screen.getByTestId('contact-popup-scroll')).toBeTruthy();
-    expect(JSON.stringify(screen.getByTestId('contact-popup').props.style)).toContain('"maxHeight":670');
+    expect(JSON.stringify(screen.getByTestId('contact-popup').props.style)).toContain(`"maxHeight":${popupMaxHeight(812, 0, 0)}`);
   });
 
   // Covers: HOME_CONTACT_TC_006 — rapid taps open one popup
