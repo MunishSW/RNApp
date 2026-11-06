@@ -1,0 +1,3 @@
+[submodule ".claude/skills/tdd-spec-generator"]
+	path = .claude/skills/tdd-spec-generator
+	url = http://gitlab.snapwork.com/skills/tdd-sepc-generator.git
