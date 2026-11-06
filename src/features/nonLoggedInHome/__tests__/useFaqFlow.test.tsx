@@ -49,8 +49,8 @@ afterEach(() => {
 });
 
 describe('useFaqFlow', () => {
-  // Covers: FR-4.5-01, FR-4.5-02, BR-6, P-07, TC-301 - cached list opens at once with no request or spinner
-  it('[TC-301] opens the FAQ screen at once from the cache and sets the back flag', async () => {
+  // Covers: HOME_ACTION_TC_009, HOME_BACK_TC_005 - cached list opens at once with no request or spinner (FR-035, FR-036, BR-6, P-07)
+  it('[HOME_ACTION_TC_009] opens the FAQ screen at once from the cache and sets the back flag', async () => {
     const { result, navigate, store } = setup(true);
     await act(async () => {
       await result.current.onFaqPress();
@@ -61,8 +61,19 @@ describe('useFaqFlow', () => {
     expect(store.getState().sessionFlags.faqsFromNonLogin).toBe(true);
   });
 
-  // Covers: FR-4.5-03, FR-4.5-04, P-08, TC-302 - spinner, one request, store and open
-  it('[TC-302] shows the spinner, requests once, stores the list and opens the FAQ screen', async () => {
+  // Covers: HOME_BACK_TC_005 - the FAQ back flag is also set on the fetch path, so FAQ back returns to Home (FAQ screen is another module)
+  it('[HOME_BACK_TC_005] sets the FAQ back flag when the list is fetched', async () => {
+    mockFetch.mockResolvedValue([{ question: 'q', answer: 'a' }]);
+    const { result, store } = setup();
+    expect(store.getState().sessionFlags.faqsFromNonLogin).toBe(false);
+    await act(async () => {
+      await result.current.onFaqPress();
+    });
+    expect(store.getState().sessionFlags.faqsFromNonLogin).toBe(true);
+  });
+
+  // Covers: HOME_ACTION_TC_004, HOME_ACTION_TC_008 - spinner, one request, store and open (FR-037, FR-038, P-08)
+  it('[HOME_ACTION_TC_004] shows the spinner, requests once, stores the list and opens the FAQ screen', async () => {
     const d = deferred<Array<{ question: string; answer: string }>>();
     mockFetch.mockReturnValue(d.promise);
     const { result, navigate, store } = setup();
@@ -81,8 +92,8 @@ describe('useFaqFlow', () => {
     expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 
-  // Covers: FR-4.5-03, N-05, TC-306 - taps while loading send one request but still set the flag
-  it('[TC-306] ignores taps while loading and sends one request', async () => {
+  // Covers: HOME_FAQ_TC_003 - taps while loading send one request but still set the flag (FR-037, N-05)
+  it('[HOME_FAQ_TC_003] ignores taps while loading and sends one request', async () => {
     const d = deferred<unknown[]>();
     mockFetch.mockReturnValue(d.promise);
     const { result } = setup();
@@ -100,8 +111,8 @@ describe('useFaqFlow', () => {
     expect(result.current.loading).toBe(false);
   });
 
-  // Covers: FR-4.5-05, N-03, N-04, TC-304, TC-305 - empty (the service maps a non-list to empty) stays on Home without a dialog
-  it('[TC-304] stays on Home with no dialog for an empty list', async () => {
+  // Covers: HOME_FAQ_TC_001 - empty (the service maps a non-list to empty) stays on Home without a dialog (FR-039, N-03, N-04)
+  it('[HOME_FAQ_TC_001] stays on Home with no dialog for an empty list', async () => {
     mockFetch.mockResolvedValue([]);
     const { result, navigate, store } = setup();
     await act(async () => {
@@ -114,8 +125,8 @@ describe('useFaqFlow', () => {
     expect(sink).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.5-06, N-02, TC-303 - failure: spinner clears, dialog, dialog_shown
-  it('[TC-303] clears the spinner, shows the dialog and records dialog_shown on failure', async () => {
+  // Covers: HOME_NEG_TC_001, HOME_FAQ_TC_007 - failure: spinner clears, dialog, dialog_shown (FR-040, N-02)
+  it('[HOME_NEG_TC_001] clears the spinner, shows the dialog and records dialog_shown on failure', async () => {
     mockFetch.mockRejectedValue(new Error('Request failed with status code 500'));
     const { result, navigate } = setup();
     await act(async () => {
@@ -133,8 +144,8 @@ describe('useFaqFlow', () => {
     );
   });
 
-  // Covers: FR-4.5-06, FR-4.5-07, TC-308 - "Okay" closes the dialog and a retry succeeds
-  it('[TC-308] closes the dialog on "Okay" and a retry opens the FAQ screen', async () => {
+  // Covers: HOME_FAQ_TC_005 - "Okay" closes the dialog and a retry succeeds (FR-040, FR-041)
+  it('[HOME_FAQ_TC_005] closes the dialog on "Okay" and a retry opens the FAQ screen', async () => {
     mockFetch.mockRejectedValueOnce(new Error('500')).mockResolvedValueOnce([{ question: 'q', answer: 'a' }]);
     const { result, navigate } = setup();
     await act(async () => {
@@ -150,7 +161,7 @@ describe('useFaqFlow', () => {
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 
-  // Covers: FR-4.5-07 - the failed request is not retried automatically
+  // the failed request is not retried automatically (FR-041)
   it('does not retry automatically after a failure', async () => {
     mockFetch.mockRejectedValue(new Error('500'));
     const { result } = setup();
@@ -161,7 +172,7 @@ describe('useFaqFlow', () => {
     expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 
-  // Covers: PERF-5, PERF-3 - no state update after unmount, spinner state safe
+  // no state update after unmount, spinner state safe (PERF-5, PERF-3)
   it('does not update state after unmount', async () => {
     const d = deferred<unknown[]>();
     mockFetch.mockReturnValue(d.promise);

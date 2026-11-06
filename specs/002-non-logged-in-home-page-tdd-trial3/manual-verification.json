@@ -1,0 +1,10 @@
+{
+  "HOME_BACK_TC_005": "manual - Needs the real navigator and FAQ destination screen; stack pop behaviour is not exercised by unit tests.",
+  "HOME_CONTACT_TC_003": "manual - Needs a real screen reader on device to confirm focus lands on the Contact Us tile",
+  "HOME_CONTACT_TC_004": "manual - Visual clipping at maximum OS text settings needs a real device",
+  "HOME_CONTACT_TC_005": "manual (remaining part) - dialer, mail app and Branch locator really opening on a device (BRD O-06, behaviour pending)",
+  "HOME_NET_TC_007": "manual (remaining part) - visual check on a 320 x 568 device that nothing is clipped",
+  "HOME_NET_TC_009": "manual - Real-device timing.",
+  "HOME_NET_TC_010": "manual - Device memory profiling.",
+  "HOME_NET_TC_011": "manual - Real-device visual comparison."
+}

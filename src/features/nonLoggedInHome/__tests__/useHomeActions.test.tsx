@@ -52,8 +52,8 @@ afterEach(() => {
 });
 
 describe('useHomeActions', () => {
-  // Covers: FR-4.3-02, BR-8, P-02, TC-201 - Login records cta_clicked, then opens the Login screen
-  it('[TC-201] records cta_clicked then navigates to LoginScreen', () => {
+  // Covers: HOME_ACTION_TC_007 - Login records cta_clicked, then opens the Login screen (FR-021, BR-8, P-02)
+  it('[HOME_ACTION_TC_007] records cta_clicked then navigates to LoginScreen', () => {
     const { result, navigation } = setup();
     act(() => result.current.onLoginPress());
     expect(sink).toHaveBeenCalledWith({
@@ -64,7 +64,7 @@ describe('useHomeActions', () => {
     expect(sink.mock.invocationCallOrder[0]).toBeLessThan(navigation.navigate.mock.invocationCallOrder[0]);
   });
 
-  // Covers: FR-4.2-06, FR-4.2-07, P-04, P-05, P-14, TC-203, TC-204, TC-206 - tile destinations
+  // Covers: HOME_ACTION_TC_002, HOME_ACTION_TC_003, HOME_ACTION_TC_005 - tile destinations (FR-015, FR-016, P-04, P-05, P-14)
   it.each([
     ['ourProducts', 'Products', undefined],
     ['trackApplication', 'TrackApplication', undefined],
@@ -76,8 +76,8 @@ describe('useHomeActions', () => {
     expect(navigation.navigate).toHaveBeenCalledWith(route, params);
   });
 
-  // Covers: FR-4.2-09, TC-207 - every tile records quick_link_clicked with the right link name
-  it('[TC-207] records quick_link_clicked with link_name, location and logged_in false', () => {
+  // every tile records quick_link_clicked with the right link name (FR-018)
+  it('records quick_link_clicked with link_name, location and logged_in false', () => {
     const { result, navigation } = setup({ onContactPress: jest.fn() });
     TILES.forEach(t => {
       act(() => result.current.onTilePress(t));
@@ -99,7 +99,7 @@ describe('useHomeActions', () => {
     expect(navigation.navigate).toHaveBeenCalledTimes(4);
   });
 
-  // Covers: FR-4.2-09 - a failed navigation is still counted
+  // a failed navigation is still counted (FR-018)
   it('counts the tap even when navigation throws', () => {
     const { result } = setup({}, true);
     expect(() => act(() => result.current.onTilePress(tile('offers')))).toThrow();
@@ -109,7 +109,7 @@ describe('useHomeActions', () => {
     });
   });
 
-  // Covers: FR-4.2-08, BR-7, P-06 - Contact Us marks a non-logged user, records both events, does not navigate
+  // Contact Us marks a non-logged user, records both events, does not navigate (FR-017, BR-7, P-06)
   it('Contact Us sets the non-logged flag, records events and opens the popup without a route change', () => {
     const onContactPress = jest.fn();
     const { result, navigation, store } = setup({ onContactPress });
@@ -123,7 +123,7 @@ describe('useHomeActions', () => {
     expect(navigation.navigate).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.2-06, FR-4.5-01 - FAQs hands off to the FAQ flow, no direct navigation
+  // FAQs hands off to the FAQ flow, no direct navigation (FR-015, FR-035)
   it('FAQs runs the FAQ handler and does not navigate itself', () => {
     const { result, navigation } = setup();
     act(() => result.current.onTilePress(tile('faqs')));
@@ -131,8 +131,8 @@ describe('useHomeActions', () => {
     expect(navigation.navigate).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.2-10, E-14 - rapid taps on different tiles open only one destination
-  it('[E-14] opens one destination for rapid taps on different tiles', () => {
+  // Covers: HOME_NET_TC_005 - rapid taps on different tiles open only one destination (FR-019, E-14)
+  it('[HOME_NET_TC_005] opens one destination for rapid taps on different tiles', () => {
     const { result, navigation } = setup();
     act(() => {
       result.current.onTilePress(tile('offers'));

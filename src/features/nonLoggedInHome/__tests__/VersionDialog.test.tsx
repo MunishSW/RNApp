@@ -9,8 +9,8 @@ const handlers = () => ({ onUpdate: jest.fn(), onExit: jest.fn(), onSkip: jest.f
 afterEach(() => restorePlatformOS());
 
 describe('VersionDialog', () => {
-  // Covers: FR-4.7-05, N-06, TC-407, TC-803 - maintenance: server message, "Exit" only, not dismissable (Android)
-  it('[TC-407] shows the maintenance message with only "Exit" on Android and cannot be dismissed', () => {
+  // Covers: HOME_VER_TC_002, HOME_VER_TC_012 - maintenance: server message, "Exit" only, not dismissable (Android) (FR-052, N-06)
+  it('[HOME_VER_TC_002] shows the maintenance message with only "Exit" on Android and cannot be dismissed', () => {
     setPlatformOS('android');
     const h = handlers();
     render(<VersionDialog outcome={{ kind: 'maintenance', message: 'Down for maintenance' }} {...h} />);
@@ -23,15 +23,15 @@ describe('VersionDialog', () => {
     expect(h.onExit).toHaveBeenCalledTimes(1);
   });
 
-  // Covers: FR-4.7-05, E-12 - maintenance on iOS has no button at all
+  // Covers: HOME_VER_TC_011 - maintenance on iOS has no button at all (FR-052, E-12)
   it('shows the maintenance message with no button on iOS', () => {
     setPlatformOS('ios');
     render(<VersionDialog outcome={{ kind: 'maintenance', message: 'Down' }} {...handlers()} />);
     expect(screen.queryAllByRole('button')).toHaveLength(0);
   });
 
-  // Covers: FR-4.7-06, N-07, TC-408, TC-804 - mandatory: exact text, "Update" opens target, "Exit" on Android, not dismissable
-  it('[TC-408] shows the mandatory message with "Update" and "Exit" on Android', () => {
+  // Covers: HOME_VER_TC_003, HOME_VER_TC_004, HOME_VER_TC_012 - mandatory: exact text, "Update" opens target, "Exit" on Android, not dismissable (FR-053, N-07)
+  it('[HOME_VER_TC_003] shows the mandatory message with "Update" and "Exit" on Android', () => {
     setPlatformOS('android');
     const h = handlers();
     render(<VersionDialog outcome={{ kind: 'mandatory', targetUrl: 'https://store.example.test/a' }} {...h} />);
@@ -44,8 +44,8 @@ describe('VersionDialog', () => {
     expect(h.onExit).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.7-06, E-12, TC-802 - iOS mandatory has "Update" only and cannot be dismissed
-  it('[TC-802] shows only "Update" on iOS and cannot be dismissed', () => {
+  // Covers: HOME_VER_TC_011 - iOS mandatory has "Update" only and cannot be dismissed (FR-053, E-12)
+  it('[HOME_VER_TC_011] shows only "Update" on iOS and cannot be dismissed', () => {
     setPlatformOS('ios');
     const h = handlers();
     render(<VersionDialog outcome={{ kind: 'mandatory', targetUrl: 'u' }} {...h} />);
@@ -54,8 +54,8 @@ describe('VersionDialog', () => {
     expect(h.onSkip).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.7-07, N-07, TC-409 - optional: "Update" and "Skip"; "Skip" and back close it
-  it('[TC-409] shows "Update" and "Skip" for an optional update and Skip closes it', () => {
+  // Covers: HOME_VER_TC_005 - optional: "Update" and "Skip"; "Skip" and back close it (FR-054, N-07)
+  it('[HOME_VER_TC_005] shows "Update" and "Skip" for an optional update and Skip closes it', () => {
     setPlatformOS('android');
     const h = handlers();
     render(<VersionDialog outcome={{ kind: 'optional', targetUrl: 'u' }} {...h} />);
@@ -67,7 +67,7 @@ describe('VersionDialog', () => {
     expect(h.onSkip).toHaveBeenCalledTimes(2);
   });
 
-  // Covers: FR-4.7-08 - a generic error shows the message with "Okay"
+  // a generic error shows the message with "Okay" (FR-055)
   it('shows an error message with "Okay"', () => {
     const h = handlers();
     render(<VersionDialog outcome={{ kind: 'error', message: 'Server said no' }} {...h} />);
@@ -76,7 +76,7 @@ describe('VersionDialog', () => {
     expect(h.onOkay).toHaveBeenCalledTimes(1);
   });
 
-  // Covers: FR-4.7-08, N-08, FR-4.7-09, N-09 - none and sessionExpired show nothing
+  // Covers: HOME_VER_TC_001 - none and sessionExpired show nothing (FR-055, N-08, FR-056, N-09)
   it('renders nothing for none and for sessionExpired', () => {
     const { rerender } = render(<VersionDialog outcome={{ kind: 'none' }} {...handlers()} />);
     expect(screen.queryByTestId('version-dialog')).toBeNull();

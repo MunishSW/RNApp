@@ -21,7 +21,7 @@ function stub(captured: Captured[], respond: () => unknown) {
 afterEach(() => restorePlatformOS());
 
 describe('classifyVersionResponse', () => {
-  // Covers: HOME_VER_TC_001 — up to date, no dialog
+  // Covers: HOME_VER_TC_001 - up to date, no dialog
   it('[HOME_VER_TC_001] returns none when the installed version equals the published one', () => {
     expect(
       classifyVersionResponse(
@@ -31,7 +31,7 @@ describe('classifyVersionResponse', () => {
     ).toEqual({ kind: 'none' });
   });
 
-  // Covers: HOME_VER_TC_002 — maintenance
+  // Covers: HOME_VER_TC_002 - maintenance
   it('[HOME_VER_TC_002] returns maintenance with the server message', () => {
     expect(
       classifyVersionResponse(
@@ -41,7 +41,7 @@ describe('classifyVersionResponse', () => {
     ).toEqual({ kind: 'maintenance', message: 'Back at 6 PM' });
   });
 
-  // Covers: HOME_VER_TC_003 — mandatory update
+  // Covers: HOME_VER_TC_003 - mandatory update
   it('[HOME_VER_TC_003] returns mandatory for an older version, force Y, Active', () => {
     expect(
       classifyVersionResponse(
@@ -57,7 +57,7 @@ describe('classifyVersionResponse', () => {
     ).toEqual({ kind: 'mandatory', targetUrl: 'https://store.example/app' });
   });
 
-  // Covers: HOME_VER_TC_005 — optional update
+  // Covers: HOME_VER_TC_005 - optional update
   it('[HOME_VER_TC_005] returns optional for an older version, optional Y, Active', () => {
     expect(
       classifyVersionResponse(
@@ -74,7 +74,7 @@ describe('classifyVersionResponse', () => {
     ).toEqual({ kind: 'optional', targetUrl: 'https://store.example/app' });
   });
 
-  // Covers: HOME_VER_TC_006 — not Active, not enforced
+  // Covers: HOME_VER_TC_006 - not Active, not enforced
   it('[HOME_VER_TC_006] does not enforce an update when status is not Active', () => {
     expect(
       classifyVersionResponse(
@@ -90,7 +90,7 @@ describe('classifyVersionResponse', () => {
     ).toEqual({ kind: 'none' });
   });
 
-  // Covers: HOME_VER_TC_007 — 1.8.10 is newer than 1.8.9
+  // Covers: HOME_VER_TC_007 - 1.8.10 is newer than 1.8.9
   it('[HOME_VER_TC_007] treats 1.8.10 as newer than 1.8.9', () => {
     expect(compareVersions('1.8.9', '1.8.10')).toBe(-1);
     expect(compareVersions('1.8.10', '1.8.9')).toBe(1);
@@ -109,8 +109,8 @@ describe('classifyVersionResponse', () => {
     ).toMatchObject({ kind: 'mandatory' });
   });
 
-  // Covers: HOME_VER_TC_008 — 401 session expired with server message
-  it('[HOME_VER_TC_008] returns sessionExpired with the server message for returnCode 401', () => {
+  // 401 session expired with server message
+  it('returns sessionExpired with the server message for returnCode 401', () => {
     expect(
       classifyVersionResponse(
         { returnStatus: { returnCode: '401', returnMessage: 'Session expired' } },
@@ -130,7 +130,7 @@ describe('classifyVersionResponse', () => {
     expect(generic.kind).toBe('error');
   });
 
-  // Covers: HOME_VER_TC_009 — null, empty or malformed bodies fail open
+  // Covers: HOME_VER_TC_009 - null, empty or malformed bodies fail open
   it('[HOME_VER_TC_009] fails open on null, empty and malformed bodies', () => {
     [null, undefined, '', {}, 'x', 42, []].forEach(body => {
       expect(classifyVersionResponse(body, '1.8.9')).toEqual({ kind: 'none' });
@@ -139,7 +139,7 @@ describe('classifyVersionResponse', () => {
 });
 
 describe('checkAppVersion', () => {
-  // Covers: HOME_VER_TC_010 — capitalised platform value and installed version
+  // Covers: HOME_VER_TC_010 - capitalised platform value and installed version
   it('[HOME_VER_TC_010] posts the installed version with user_agent Android', async () => {
     setPlatformOS('android');
     const captured: Captured[] = [];
@@ -153,6 +153,7 @@ describe('checkAppVersion', () => {
     });
   });
 
+  // Covers: HOME_VER_TC_010 - user_agent is exactly iOS on iOS, never lowercase
   it('[HOME_VER_TC_010] posts user_agent iOS on iOS (never lowercase)', async () => {
     setPlatformOS('ios');
     const captured: Captured[] = [];
@@ -161,7 +162,7 @@ describe('checkAppVersion', () => {
     expect(JSON.parse(String(captured[0].data)).user_agent).toBe('iOS');
   });
 
-  // Covers: HOME_VER_TC_009 — a failed call fails open
+  // Covers: HOME_VER_TC_009 - a failed call fails open
   it('[HOME_VER_TC_009] resolves to none when the request fails', async () => {
     stub([], () => new Error('Network Error'));
     await expect(checkAppVersion()).resolves.toEqual({ kind: 'none' });

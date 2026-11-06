@@ -16,7 +16,7 @@ const icons = {
 };
 
 describe('QuickLinkGrid', () => {
-  // Covers: FR-4.2-01, BR-4, P-01, TC-103 - six tiles in a 3 + 3 layout in the fixed order
+  // Covers: HOME_LAYOUT_TC_001, HOME_LAYOUT_TC_002 - six tiles in a 3 + 3 layout in the fixed order (FR-010, BR-4, P-01)
   it('shows six tiles in two rows of three in the fixed order', () => {
     render(<QuickLinkGrid tiles={TILES} icons={icons} onTilePress={jest.fn()} stacked={false} />);
     const row1 = within(screen.getByTestId('home-grid-row-1'));
@@ -33,7 +33,7 @@ describe('QuickLinkGrid', () => {
     ]);
   });
 
-  // Covers: FR-4.2-01 - Figma grid width 331 and 18 gap, rows spread tiles with space between
+  // Figma grid width 331 and 18 gap, rows spread tiles with space between (FR-010)
   it('uses the Figma grid width, row gap and spacing', () => {
     render(<QuickLinkGrid tiles={TILES} icons={icons} onTilePress={jest.fn()} stacked={false} />);
     const grid = StyleSheet.flatten(screen.getByTestId('home-grid').props.style);
@@ -45,7 +45,7 @@ describe('QuickLinkGrid', () => {
     expect(row.justifyContent).toBe('space-between');
   });
 
-  // Covers: FR-4.2-03, E-01, TC-603 - one full-width column when stacked
+  // one full-width column when stacked (FR-012, E-01)
   it('stacks into one full-width column at large text', () => {
     render(<QuickLinkGrid tiles={TILES} icons={icons} onTilePress={jest.fn()} stacked />);
     expect(screen.queryByTestId('home-grid-row-1')).toBeNull();
@@ -54,7 +54,7 @@ describe('QuickLinkGrid', () => {
     expect(grid.width).toBe('100%');
   });
 
-  // Covers: FR-4.2-09 - a tile press reports the tile
+  // a tile press reports the tile (FR-018)
   it('reports the pressed tile', () => {
     const onTilePress = jest.fn();
     render(<QuickLinkGrid tiles={TILES} icons={icons} onTilePress={onTilePress} stacked={false} />);

@@ -21,7 +21,7 @@ beforeEach(() => jest.useFakeTimers());
 afterEach(() => jest.useRealTimers());
 
 describe('useGuardedNavigate (feature copy)', () => {
-  // Covers: FR-4.2-10, E-14 - rapid taps on different tiles open one destination
+  // Covers: HOME_NET_TC_005 - rapid taps on different tiles open one destination (FR-019, E-14)
   it('opens one destination for rapid taps on different tiles', () => {
     const { nav } = fakeNavigation();
     const { result } = renderHook(() => useGuardedNavigate(nav));
@@ -34,7 +34,7 @@ describe('useGuardedNavigate (feature copy)', () => {
     expect(nav.navigate).toHaveBeenCalledWith('Products', undefined);
   });
 
-  // Covers: FR-4.2-10 - the lock is released on focus
+  // Covers: HOME_NET_TC_006 - the lock is released on focus (FR-019)
   it('unlocks when the screen regains focus', () => {
     const { nav, emit } = fakeNavigation();
     const { result } = renderHook(() => useGuardedNavigate(nav));
@@ -48,7 +48,7 @@ describe('useGuardedNavigate (feature copy)', () => {
     expect(nav.navigate).toHaveBeenCalledTimes(2);
   });
 
-  // Covers: FR-4.2-10 - the safety timer releases the lock
+  // the safety timer releases the lock (FR-019)
   it('unlocks after the safety timer', () => {
     const { nav } = fakeNavigation();
     const { result } = renderHook(() => useGuardedNavigate(nav));
@@ -60,7 +60,7 @@ describe('useGuardedNavigate (feature copy)', () => {
     expect(nav.navigate).toHaveBeenCalledTimes(2);
   });
 
-  // Covers: PERF-5 - cleanup on unmount
+  // cleanup on unmount (PERF-5)
   it('removes its focus listener on unmount', () => {
     const { nav } = fakeNavigation();
     const { unmount } = renderHook(() => useGuardedNavigate(nav));

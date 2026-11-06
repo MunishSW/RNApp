@@ -5,7 +5,7 @@ function failure(status: number, data?: unknown) {
 }
 
 describe('classifyApiError', () => {
-  // Covers: BRD 8.4.4, FR-4.4-09, N-01 - network and timeout failures are retryable
+  // network and timeout failures are retryable (BRD 8.4.4, FR-032, N-01)
   it('classifies a failure with no response as Network and retryable', () => {
     expect(classifyApiError(new Error('Network Error'))).toEqual({
       errorCategory: 'Network',
@@ -18,7 +18,7 @@ describe('classifyApiError', () => {
     expect(classifyApiError(undefined).errorCategory).toBe('Network');
   });
 
-  // Covers: BRD 8.4.3, 8.4.4 - 401 and 400-with-auth-code are Auth and not retryable
+  // 401 and 400-with-auth-code are Auth and not retryable (BRD 8.4.3, 8.4.4)
   it('classifies HTTP 401 and HTTP 400 with an auth code as Auth', () => {
     expect(classifyApiError(failure(401))).toEqual({
       status: 401,
@@ -32,7 +32,7 @@ describe('classifyApiError', () => {
     ).toBe('Auth');
   });
 
-  // Covers: BRD 8.4.4, N-02 - 429 and 5xx are Server and retryable
+  // 429 and 5xx are Server and retryable (BRD 8.4.4, N-02)
   it('classifies 429 and 5xx as Server and retryable', () => {
     [429, 500, 503].forEach(status => {
       expect(classifyApiError(failure(status))).toEqual({
@@ -43,7 +43,7 @@ describe('classifyApiError', () => {
     });
   });
 
-  // Covers: BRD 8.4.4 - other 4xx are Validation and not retryable
+  // other 4xx are Validation and not retryable (BRD 8.4.4)
   it('classifies other 4xx as Validation and not retryable', () => {
     expect(classifyApiError(failure(400, { message: 'bad' }))).toEqual({
       status: 400,

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, StyleSheet } from 'react-native';
+import { act } from '@testing-library/react-native';
+import { Dimensions, Modal, StyleSheet, Text } from 'react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { CustomerCarePopup, popupMaxHeight } from '../components/CustomerCarePopup';
 
@@ -11,8 +12,8 @@ function setup(visible = true) {
 }
 
 describe('CustomerCarePopup', () => {
-  // Covers: FR-4.6-01, P-06, TC-205 - exact heading and three rows
-  it('[TC-205] shows "We are here to help!" with Call Us, Email Us and Find Us and their details', () => {
+  // Covers: HOME_CONTACT_TC_001 - exact heading and three rows (FR-043, P-06)
+  it('[HOME_CONTACT_TC_001] shows "We are here to help!" with Call Us, Email Us and Find Us and their details', () => {
     setup();
     expect(screen.getByText('We are here to help!')).toBeTruthy();
     expect(screen.getByText('Call Us')).toBeTruthy();
@@ -23,8 +24,8 @@ describe('CustomerCarePopup', () => {
     expect(screen.getByText('Branch locator')).toBeTruthy();
   });
 
-  // Covers: FR-4.6-02, FR-7.4-01, TC-607 - modal for screen readers, heading role, button rows
-  it('[TC-607] is modal for screen readers with a header and button rows', () => {
+  // modal for screen readers, heading role, button rows (FR-044, FR-066)
+  it('is modal for screen readers with a header and button rows', () => {
     setup();
     expect(screen.getByTestId('contact-popup').props.accessibilityViewIsModal).toBe(true);
     expect(screen.getByRole('header').props.children).toBe('We are here to help!');
@@ -33,7 +34,7 @@ describe('CustomerCarePopup', () => {
     expect(screen.getByRole('button', { name: 'Find Us, Branch locator' })).toBeTruthy();
   });
 
-  // Covers: FR-4.6-03 - each row reports its id
+  // each row reports its id (FR-045)
   it('reports the pressed row', () => {
     const { onRowPress } = setup();
     fireEvent.press(screen.getByTestId('contact-row-call'));
@@ -42,8 +43,8 @@ describe('CustomerCarePopup', () => {
     expect(onRowPress.mock.calls.map(c => c[0])).toEqual(['call', 'email', 'find']);
   });
 
-  // Covers: FR-4.6-04, E-11, TC-208 - close control, outside tap and Android back all close it
-  it('[TC-208] closes from the close control, an outside tap and Android back', () => {
+  // Covers: HOME_CONTACT_TC_002 - close control, outside tap and Android back all close it (FR-046, E-11)
+  it('[HOME_CONTACT_TC_002] closes from the close control, an outside tap and Android back', () => {
     const { onClose } = setup();
     fireEvent.press(screen.getByTestId('contact-popup-close'));
     fireEvent.press(screen.getByTestId('contact-popup-backdrop'));
@@ -51,7 +52,7 @@ describe('CustomerCarePopup', () => {
     expect(onClose).toHaveBeenCalledTimes(3);
   });
 
-  // Covers: FR-4.6-05, E-01, E-02 - height cap is window - insets - 64 and the content scrolls
+  // Covers: HOME_CONTACT_TC_004 - height cap is window - insets - 64 and the content scrolls (FR-047, E-01, E-02)
   it('caps its height at window minus insets minus 64 and scrolls inside', () => {
     expect(popupMaxHeight(800, 24, 34)).toBe(678);
     expect(popupMaxHeight(100, 50, 50)).toBe(0);
@@ -61,7 +62,33 @@ describe('CustomerCarePopup', () => {
     expect(screen.getByTestId('contact-popup-scroll')).toBeTruthy();
   });
 
-  // Covers: FR-4.6-01 - hidden by default
+  // Covers: HOME_CONTACT_TC_004 - at 2x text the card height is capped at the exact window-minus-insets-minus-64 value, the content scrolls and no text has a fixed height
+  it('[HOME_CONTACT_TC_004] caps the card at the exact height and leaves text unclipped at large text sizes', () => {
+    const original = Dimensions.get('window');
+    const large = { width: 360, height: 640, scale: 3, fontScale: 2 };
+    act(() => {
+      Dimensions.set({ window: large, screen: large });
+    });
+    try {
+      setup();
+      const card = StyleSheet.flatten(screen.getByTestId('contact-popup').props.style);
+      expect(card.maxHeight).toBe(popupMaxHeight(640, 0, 0));
+      expect(card.maxHeight).toBe(576);
+      expect(screen.getByTestId('contact-popup-scroll')).toBeTruthy();
+      screen.UNSAFE_getAllByType(Text).forEach(node => {
+        const style = StyleSheet.flatten(node.props.style) ?? {};
+        expect(style.height).toBeUndefined();
+        expect(style.maxHeight).toBeUndefined();
+        expect(node.props.numberOfLines).toBeUndefined();
+      });
+    } finally {
+      act(() => {
+        Dimensions.set({ window: original, screen: original });
+      });
+    }
+  });
+
+  // hidden by default (FR-043)
   it('shows nothing when not visible', () => {
     setup(false);
     expect(screen.queryByText('We are here to help!')).toBeNull();

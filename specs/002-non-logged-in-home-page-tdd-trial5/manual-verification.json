@@ -1,0 +1,9 @@
+{
+  "HOME_CONTACT_TC_003": "manual (remaining part) - the focus move is asserted against a mocked node handle; whether TalkBack or VoiceOver actually lands on the Contact Us tile needs a real screen reader (M-11b)",
+  "HOME_CONTACT_TC_004": "manual (remaining part) - visual check that nothing is clipped at 2x text, 0.36em spacing and 2x line height on a device (M-10)",
+  "HOME_FAQ_TC_004": "manual (remaining part) - native Modal touch blocking is not exercised by the test renderer; a person taps tiles while the spinner shows on a device (M-5, M-6)",
+  "HOME_NET_TC_007": "manual (remaining part) - visual check on a 320 x 568 device or emulator that content scrolls and nothing is clipped (M-13)",
+  "HOME_NET_TC_009": "manual - cold-start time to interactive (PERF-1, 2 s, owner-set) is device timing on a mid-range device; no unit test can measure it",
+  "HOME_NET_TC_010": "manual (remaining part) - memory growth cannot be measured in Jest; a person runs repeated tile open and close with a profiler on a device (T069, M-14 area)",
+  "HOME_NET_TC_011": "manual - Android and iOS layout and flow parity needs both platforms on real devices; unit tests only fake Platform.OS"
+}

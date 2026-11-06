@@ -16,8 +16,8 @@ import {
 } from '../nonLoggedInHomeConstants';
 
 describe('label file', () => {
-  // Covers: FR-4.1-03, P-01, TC-102 - exact headline and its three lines
-  it('[TC-102] keeps the exact headline on three lines', () => {
+  // Covers: HOME_LAYOUT_TC_001 - exact headline and its three lines (FR-003, P-01)
+  it('[HOME_LAYOUT_TC_001] keeps the exact headline on three lines', () => {
     expect(HEADLINE_LINES).toEqual([
       'Login to download account statements,',
       'make payments, and manage your',
@@ -29,8 +29,8 @@ describe('label file', () => {
     );
   });
 
-  // Covers: FR-4.2-01, BR-4, TC-103 - tile order and labels
-  it('[TC-103] lists six tiles in the fixed order with exact labels', () => {
+  // Covers: HOME_LAYOUT_TC_002 - tile order and labels (FR-010, BR-4)
+  it('[HOME_LAYOUT_TC_002] lists six tiles in the fixed order with exact labels', () => {
     expect(TILES.map(t => t.label)).toEqual([
       'Pay Now',
       'Our Products',
@@ -49,8 +49,8 @@ describe('label file', () => {
     ]);
   });
 
-  // Covers: FR-4.3-01, FR-4.3-05, TC-107, TC-108, TC-109 - single "Login", no Register Now, chatbot or accessibility entry
-  it('[TC-107] has the "Login" label and no Register Now, chatbot or accessibility text', () => {
+  // Covers: HOME_LAYOUT_TC_001 - single "Login", no Register Now, chatbot or accessibility entry (FR-020, FR-024)
+  it('[HOME_LAYOUT_TC_001] has the "Login" label and no Register Now, chatbot or accessibility text', () => {
     expect(LOGIN_LABEL).toBe('Login');
     const all = JSON.stringify([
       HEADLINE,
@@ -64,7 +64,7 @@ describe('label file', () => {
     expect(all).not.toContain('accessibility');
   });
 
-  // Covers: FR-4.5-06, FR-4.6-01, FR-4.7-xx, FR-4.8-xx - exact dialog and popup text
+  // exact dialog and popup text (FR-040, FR-043, BRD area 4.7, BRD area 4.8)
   it('keeps the exact popup, dialog and button text', () => {
     expect(CONTACT_POPUP.heading).toBe('We are here to help!');
     expect(CONTACT_POPUP.rows.map(r => [r.title, r.subtitle])).toEqual([

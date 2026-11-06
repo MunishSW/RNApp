@@ -32,7 +32,7 @@ function decrypt(output: string): string {
 }
 
 describe('field encryption (AES-128-GCM)', () => {
-  // Covers: HOME_TOKEN_TC_006 — fields are encrypted, not plain text, in the agreed format
+  // Covers: HOME_TOKEN_TC_006 - fields are encrypted, not plain text, in the agreed format
   it('[HOME_TOKEN_TC_006] outputs base64url(IV):base64url(ciphertext+tag) and round-trips', () => {
     const iv = Uint8Array.from({ length: 12 }, (_, i) => i + 1);
     const encrypt = createFieldEncryptor({ randomBytes: () => iv, sealer: nodeSealer });
@@ -46,7 +46,7 @@ describe('field encryption (AES-128-GCM)', () => {
     expect(decrypt(out)).toBe('MOBILE_APP_N2P');
   });
 
-  // Covers: HOME_TOKEN_TC_006 — a fresh 12-byte IV for every encryption
+  // Covers: HOME_TOKEN_TC_006 - a fresh 12-byte IV for every encryption
   it('uses a fresh random 12-byte IV each time', () => {
     let counter = 0;
     const sizes: number[] = [];

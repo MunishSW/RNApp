@@ -1,0 +1,9 @@
+{
+  "HOME_CONTACT_TC_003": "manual (remaining part) - with TalkBack and VoiceOver on, close the Contact Us popup and confirm focus lands on the Contact Us tile (M-11b)",
+  "HOME_CONTACT_TC_004": "manual (remaining part) - at large text on a device, open the popup and confirm it scrolls inside and nothing is clipped (M-10)",
+  "HOME_FAQ_TC_004": "manual (remaining part) - with the FAQ service slowed, tap FAQs and confirm tapping tiles, Login and the background does nothing until the spinner closes (M-15)",
+  "HOME_NET_TC_007": "manual (remaining part) - open Home on a 320 x 568 device and confirm nothing is clipped and Login is reachable by scrolling (M-13)",
+  "HOME_NET_TC_009": "manual - cold-start time to interactive on a mid-range device cannot be proven by a unit test; PERF-1 target is 2 seconds after splash (M-16)",
+  "HOME_NET_TC_010": "manual (remaining part) - open and close tiles repeatedly on a device and watch memory and crashes in a profiler (M-17)",
+  "HOME_NET_TC_011": "manual - Android and iOS parity of layout and flows needs both real devices; only hardware back and the Exit button may differ (M-18)"
+}

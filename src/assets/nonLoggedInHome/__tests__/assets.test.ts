@@ -4,7 +4,7 @@ import * as path from 'path';
 import { nonLoggedInHomeAssets } from '../index';
 
 describe('nonLoggedInHome assets', () => {
-  // Covers: FR-4.1-02, FR-4.2-01 - illustration and six tile icons resolve
+  // illustration and six tile icons resolve (FR-002, FR-010)
   it('resolves the illustration and the six tile icons', () => {
     expect(Object.keys(nonLoggedInHomeAssets)).toEqual([
       'illustration',

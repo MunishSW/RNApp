@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import * as fs from 'fs';
 import * as path from 'path';
-import { ctaGradient, layout, palette, themes, typography } from '../tokens';
+import { ctaGradient, faqLayout, layout, palette, themes, typography } from '../tokens';
 
 function collect(dir: string, out: string[] = []): string[] {
   for (const name of fs.readdirSync(dir)) {
@@ -19,7 +19,7 @@ function collect(dir: string, out: string[] = []): string[] {
 }
 
 describe('theme tokens', () => {
-  // Covers: HOME_LAYOUT_TC_001 — page colour and CTA gradient values match Figma
+  // Covers: HOME_LAYOUT_TC_001 - page colour and CTA gradient values match Figma
   it('[HOME_LAYOUT_TC_001] holds the Figma page colour and gradient stops', () => {
     expect(themes.light.pageBackground).toBe('#035795');
     expect(ctaGradient.stops[0].color).toBe('#FF512F');
@@ -28,8 +28,8 @@ describe('theme tokens', () => {
     expect(layout.ctaRadius).toBe(82);
   });
 
-  // Covers: FR-4.1-04, FR-4.3-01 - four Rubik weights and Figma layout numbers (spec 002, T001)
-  it('[T001] holds the four Rubik family tokens and the Figma tile and icon sizes', () => {
+  // four Rubik weights and Figma layout numbers (spec 002, T001) (FR-004, FR-020)
+  it('holds the four Rubik family tokens and the Figma tile and icon sizes', () => {
     expect(typography.fontFamilyRegular).toBe('Rubik-Regular');
     expect(typography.fontFamilyMedium).toBe('Rubik-Medium');
     expect(typography.fontFamilySemiBold).toBe('Rubik-SemiBold');
@@ -41,8 +41,8 @@ describe('theme tokens', () => {
     expect(ctaGradient.stops[1].offset).toBeCloseTo(0.94442, 5);
   });
 
-  // Covers: FR-4.1-06, FR-4.3-04, FR-7.4-03, E-03, TC-605 - every token resolves in dark and high contrast; brand CTA is exempt
-  it('[T064] resolves every token in the dark and high-contrast sets and keeps the CTA exempt from remapping', () => {
+  // every token resolves in dark and high contrast; brand CTA is exempt (FR-006, FR-023, FR-068, E-03)
+  it('resolves every token in the dark and high-contrast sets and keeps the CTA exempt from remapping', () => {
     const keys = Object.keys(themes.light) as Array<keyof typeof themes.light>;
     (['dark', 'highContrast'] as const).forEach(name => {
       keys.forEach(key => {
@@ -61,7 +61,26 @@ describe('theme tokens', () => {
     expect(themes.highContrast.textOnPage).toBe(palette.white);
   });
 
-  // Covers: HOME_LAYOUT_TC_001 — no raw hex outside the token file (FR-021)
+  it('holds the FAQ page and chevron colours in every set and the FAQ Figma sizes', () => {
+    (['light', 'dark', 'highContrast'] as const).forEach(name => {
+      expect(themes[name].faqPageBackground).toBe('#E3ECF5');
+      expect(themes[name].faqChevron).toBe('#FF5101');
+      expect(themes[name].faqActionBar).toBe('#035795');
+    });
+    expect(faqLayout.actionBarHeight).toBe(48);
+    expect(faqLayout.cardRadius).toBe(4);
+    expect(faqLayout.cardPadding).toBe(12);
+    expect(faqLayout.cardGap).toBe(8);
+    expect(faqLayout.listSide).toBe(18);
+    expect(faqLayout.listTop).toBe(12);
+    expect(faqLayout.chevronSize).toBe(20);
+    expect(faqLayout.chevronGap).toBe(7);
+    expect(faqLayout.questionFontSize).toBe(12);
+    expect(faqLayout.questionLineHeight).toBe(18);
+    expect(faqLayout.columnMaxWidth).toBe(360);
+  });
+
+  // no raw hex colours in source outside tokens.ts
   it('has no raw hex colours in source outside tokens.ts', () => {
     const src = path.join(__dirname, '..', '..');
     const offenders = collect(src).filter(

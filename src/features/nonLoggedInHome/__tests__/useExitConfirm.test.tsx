@@ -66,8 +66,8 @@ afterEach(() => {
 });
 
 describe('useExitConfirm', () => {
-  // Covers: FR-4.8-01, P-11, TC-501 - back with nothing open shows the dialog
-  it('[TC-501] shows the exit dialog on back and exits on "Okay"', () => {
+  // Covers: HOME_BACK_TC_001, HOME_BACK_TC_002 - back with nothing open shows the dialog (FR-058, P-11)
+  it('[HOME_BACK_TC_001] shows the exit dialog on back and exits on "Okay"', () => {
     const { result, pressBack } = setup();
     expect(pressBack()).toBe(true);
     expect(result.current.exitVisible).toBe(true);
@@ -76,8 +76,8 @@ describe('useExitConfirm', () => {
     expect(result.current.exitVisible).toBe(false);
   });
 
-  // Covers: FR-4.8-02, P-12, TC-502 - "CANCEL" closes the dialog and stays
-  it('[TC-502] closes the dialog on "CANCEL" without exiting', () => {
+  // Covers: HOME_BACK_TC_003 - "CANCEL" closes the dialog and stays (FR-059, P-12)
+  it('[HOME_BACK_TC_003] closes the dialog on "CANCEL" without exiting', () => {
     const { result, pressBack } = setup();
     pressBack();
     act(() => result.current.onCancel());
@@ -85,8 +85,8 @@ describe('useExitConfirm', () => {
     expect(exitApp).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.8-03, BR-10, E-11, TC-503 - an open popup closes first, then the next back shows the dialog
-  it('[TC-503] closes an open popup first and shows the exit dialog on the next back', () => {
+  // Covers: HOME_BACK_TC_004 - an open popup closes first, then the next back shows the dialog (FR-060, BR-10, E-11)
+  it('[HOME_BACK_TC_004] closes an open popup first and shows the exit dialog on the next back', () => {
     const { result, pressBack, props, rerender } = setup({ popupOpen: true });
     pressBack();
     expect(props.closePopup).toHaveBeenCalledTimes(1);
@@ -96,7 +96,7 @@ describe('useExitConfirm', () => {
     expect(result.current.exitVisible).toBe(true);
   });
 
-  // Covers: FR-4.8-03 - an open dismissable dialog closes next
+  // an open dismissable dialog closes next (FR-060)
   it('closes an open dismissable dialog before showing the exit dialog', () => {
     const { result, pressBack, props } = setup({ dialogOpen: true });
     pressBack();
@@ -104,7 +104,7 @@ describe('useExitConfirm', () => {
     expect(result.current.exitVisible).toBe(false);
   });
 
-  // Covers: FR-4.7-05, FR-4.7-06 - a blocking message swallows back
+  // Covers: HOME_VER_TC_012 - a blocking message swallows back (FR-052, FR-053)
   it('swallows back while a blocking message is open', () => {
     const { result, pressBack, props } = setup({ blocked: true, popupOpen: true });
     expect(pressBack()).toBe(true);
@@ -112,7 +112,7 @@ describe('useExitConfirm', () => {
     expect(props.closePopup).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.8-04 - registered only while Home is focused
+  // registered only while Home is focused (FR-061)
   it('registers only while focused and removes the handler on blur and unmount', () => {
     const { emit, unmount } = setup();
     expect(handlers).toHaveLength(1);
@@ -124,7 +124,7 @@ describe('useExitConfirm', () => {
     expect(handlers).toHaveLength(0);
   });
 
-  // Covers: FR-4.8-04 - the exit dialog is dismissed when Home loses focus
+  // the exit dialog is dismissed when Home loses focus (FR-061)
   it('hides the exit dialog when Home loses focus', () => {
     const { result, pressBack, emit } = setup();
     pressBack();
@@ -133,7 +133,7 @@ describe('useExitConfirm', () => {
     expect(result.current.exitVisible).toBe(false);
   });
 
-  // Covers: FR-4.8-01 - iOS has no hardware back
+  // iOS has no hardware back (FR-058)
   it('registers nothing on iOS', () => {
     setPlatformOS('ios');
     setup();

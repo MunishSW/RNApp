@@ -16,7 +16,7 @@ function stub(captured: Captured[], respond: () => unknown) {
 }
 
 describe('faqService', () => {
-  // Covers: HOME_ACTION_TC_008 — empty POST to fetch-faq on the bare host
+  // Covers: HOME_ACTION_TC_008 - empty POST to fetch-faq on the bare host
   it('[HOME_ACTION_TC_008] posts {} to fetch-faq on the bare host and returns the list', async () => {
     const captured: Captured[] = [];
     stub(captured, () => [{ question: 'How do I pay my EMI?', answer: '...' }]);
@@ -27,13 +27,13 @@ describe('faqService', () => {
     expect(JSON.parse(String(captured[0].data))).toEqual({});
   });
 
-  // Covers: HOME_FAQ_TC_001 — empty array stays empty
+  // Covers: HOME_FAQ_TC_001 - empty array stays empty
   it('[HOME_FAQ_TC_001] returns an empty list for an empty array', async () => {
     stub([], () => []);
     await expect(fetchFaq()).resolves.toEqual([]);
   });
 
-  // Covers: HOME_FAQ_TC_002 — non-array response treated as empty
+  // Covers: HOME_FAQ_TC_002 - non-array response treated as empty
   it('[HOME_FAQ_TC_002] treats a non-array response as empty', async () => {
     for (const body of [{ a: 1 }, 'text', null, 7]) {
       stub([], () => body);
@@ -41,7 +41,7 @@ describe('faqService', () => {
     }
   });
 
-  // Covers: HOME_NEG_TC_001 — 500 rejects so the caller shows the dialog
+  // Covers: HOME_NEG_TC_001 - 500 rejects so the caller shows the dialog
   it('[HOME_NEG_TC_001] rejects on a failed request', async () => {
     stub([], () => new Error('Request failed with status code 500'));
     await expect(fetchFaq()).rejects.toThrow('500');

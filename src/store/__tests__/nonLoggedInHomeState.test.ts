@@ -25,7 +25,7 @@ beforeEach(() => {
 });
 
 describe('Home state (data-model.md)', () => {
-  // Covers: FR-4.5-02, FR-4.9-04, P-07 - FAQ cache starts null, is set by items, cleared only by clearFaq
+  // FAQ cache starts null, is set by items, cleared only by clearFaq (FR-036, FR-065, P-07)
   it('keeps the FAQ cache null until set and clears it only through clearFaq', () => {
     expect(store.getState().faq.items).toBeNull();
     store.dispatch(setFaqItems([{ question: 'q', answer: 'a' }]));
@@ -34,7 +34,7 @@ describe('Home state (data-model.md)', () => {
     expect(store.getState().faq.items).toBeNull();
   });
 
-  // Covers: FR-4.4-05, E-13 - separate token slots
+  // separate token slots (FR-029, E-13)
   it('keeps the non-logged and logged-in token slots separate', () => {
     store.dispatch(setLoggedInToken('LOGGED-IN'));
     expect(store.getState().token.nonLoggedToken).toBeNull();
@@ -45,7 +45,7 @@ describe('Home state (data-model.md)', () => {
     expect(store.getState().token.loggedInToken).toBe('LOGGED-IN');
   });
 
-  // Covers: FR-4.9-01, FR-4.9-02, BR-11, P-13, TC-504, TC-505 - reset values of the offers form and selected offer
+  // Covers: HOME_RESET_TC_001, HOME_RESET_TC_002 - reset values of the offers form and selected offer (FR-062, FR-063, BR-11, P-13)
   it('resets the offers form to empty and clears the selected offer', () => {
     store.dispatch(setOffersForm({ fullName: 'A B', mobileNo: '9999999999', tncAccepted: true }));
     store.dispatch(setSelectedOffer({ id: 1 }));
@@ -55,7 +55,7 @@ describe('Home state (data-model.md)', () => {
     expect(store.getState().offers.selectedOffer).toBeNull();
   });
 
-  // Covers: FR-4.9-03, FR-4.2-08, FR-4.5-01, TC-506 - session flags
+  // Covers: HOME_RESET_TC_003 - session flags (FR-064, FR-017, FR-035)
   it('defaults the session flags and sets the register return flag back to null', () => {
     const flags = store.getState().sessionFlags;
     expect(flags.isNonLoggedUser).toBe(false);
@@ -70,7 +70,7 @@ describe('Home state (data-model.md)', () => {
     expect(store.getState().sessionFlags.faqsFromNonLogin).toBe(true);
   });
 
-  // Covers: FR-4.9-04 - the focus reset leaves the FAQ cache and the token alone
+  // Covers: HOME_RESET_TC_005 - the focus reset leaves the FAQ cache and the token alone (FR-065)
   it('does not touch the FAQ cache or the token when the focus-reset actions run', () => {
     store.dispatch(setFaqItems([{ question: 'q', answer: 'a' }]));
     store.dispatch(setNonLoggedToken('APP'));

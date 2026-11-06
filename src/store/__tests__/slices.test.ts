@@ -14,7 +14,7 @@ import {
 import { clearNonLoggedToken, setLoggedInToken, setNonLoggedToken } from '../tokenSlice';
 
 describe('store slices', () => {
-  // Covers: HOME_RESET_TC_001 — offers form reset
+  // Covers: HOME_RESET_TC_001 - offers form reset
   it('[HOME_RESET_TC_001] resetOffersForm restores the empty form', () => {
     const s = createAppStore();
     s.dispatch(setOffersForm({ fullName: 'A B', mobileNo: '9999999999', tncAccepted: true }));
@@ -22,7 +22,7 @@ describe('store slices', () => {
     expect(s.getState().offers.form).toEqual({ fullName: '', mobileNo: '', tncAccepted: false });
   });
 
-  // Covers: HOME_RESET_TC_002 — selected offer cleared
+  // Covers: HOME_RESET_TC_002 - selected offer cleared
   it('[HOME_RESET_TC_002] clearSelectedOffer empties the selection', () => {
     const s = createAppStore();
     s.dispatch(setSelectedOffer({ id: 1 }));
@@ -30,7 +30,7 @@ describe('store slices', () => {
     expect(s.getState().offers.selectedOffer).toBeNull();
   });
 
-  // Covers: HOME_RESET_TC_003 — register return flag null
+  // Covers: HOME_RESET_TC_003 - register return flag null
   it('[HOME_RESET_TC_003] registerNowReturnScreen can be set back to null', () => {
     const s = createAppStore();
     s.dispatch(setRegisterNowReturnScreen('changePassword'));
@@ -38,7 +38,7 @@ describe('store slices', () => {
     expect(s.getState().sessionFlags.registerNowReturnScreen).toBeNull();
   });
 
-  // Covers: HOME_RESET_TC_005 — FAQ cache is independent of the offers reset
+  // Covers: HOME_RESET_TC_005 - FAQ cache is independent of the offers reset
   it('[HOME_RESET_TC_005] offers reset leaves FAQ cache and token alone', () => {
     const s = createAppStore();
     s.dispatch(setFaqItems([{ question: 'q', answer: 'a' }]));
@@ -58,7 +58,7 @@ describe('store slices', () => {
     expect(s.getState().token.loggedInToken).toBe('logged');
   });
 
-  // Covers: HOME_ACTION_TC_004 — faqsFromNonLogin flag
+  // faqsFromNonLogin flag
   it('stores session flags and clears the FAQ cache on demand', () => {
     const s = createAppStore();
     s.dispatch(setFaqsFromNonLogin(true));

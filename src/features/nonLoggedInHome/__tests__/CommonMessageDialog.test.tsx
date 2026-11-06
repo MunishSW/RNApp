@@ -7,8 +7,8 @@ import { SERVER_ERROR_MESSAGE } from '../nonLoggedInHomeConstants';
 describe('CommonMessageDialog', () => {
   afterEach(() => jest.restoreAllMocks());
 
-  // Covers: FR-4.5-06, N-02, TC-303 - exact message, one "Okay" button, no close icon
-  it('[TC-303] shows the message and a single "Okay" button', () => {
+  // Covers: HOME_NEG_TC_001 - exact message, one "Okay" button, no close icon (FR-040, N-02)
+  it('[HOME_NEG_TC_001] shows the message and a single "Okay" button', () => {
     render(<CommonMessageDialog visible message={SERVER_ERROR_MESSAGE} onOkay={jest.fn()} />);
     expect(
       screen.getByText(
@@ -20,7 +20,7 @@ describe('CommonMessageDialog', () => {
     expect(buttons[0].props.accessibilityLabel).toBe('Okay');
   });
 
-  // Covers: FR-4.5-06 - "Okay" and Android back both close it
+  // "Okay" and Android back both close it (FR-040)
   it('calls onOkay from the button and from the Android back request', () => {
     const onOkay = jest.fn();
     render(<CommonMessageDialog visible message="m" onOkay={onOkay} />);
@@ -30,7 +30,7 @@ describe('CommonMessageDialog', () => {
     expect(onOkay).toHaveBeenCalledTimes(2);
   });
 
-  // Covers: FR-4.5-08, FR-7.4, E-04 - announced to screen readers and modal for them
+  // announced to screen readers and modal for them (FR-042, BRD 7.4, E-04)
   it('announces the message and is modal for screen readers', () => {
     const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility').mockImplementation(() => undefined);
     render(<CommonMessageDialog visible message="Something failed" onOkay={jest.fn()} />);

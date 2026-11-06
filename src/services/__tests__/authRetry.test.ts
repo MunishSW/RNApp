@@ -45,7 +45,7 @@ afterEach(() => {
 });
 
 describe('isAuthFailure', () => {
-  // Covers: BRD 8.4.3, FR-4.4-09 - the three auth-failure signals
+  // the three auth-failure signals (BRD 8.4.3, FR-032)
   it('detects HTTP 401, HTTP 400 with an auth code, and HTTP 200 with returnCode 401', () => {
     expect(isAuthFailure(401, undefined)).toBe(true);
     expect(isAuthFailure(400, { statusCode: '401' })).toBe(true);
@@ -65,7 +65,7 @@ describe('isAuthFailure', () => {
 });
 
 describe('one retry after a token refresh', () => {
-  // Covers: FR-4.4-09, BR-3, P-08, TC-404 - HTTP 401 refreshes once and replays with the new Bearer
+  // HTTP 401 refreshes once and replays with the new Bearer (FR-032, BR-3, P-08)
   it('replays once with the new Bearer after an HTTP 401', async () => {
     const captured: Captured[] = [];
     playSteps(captured, [{ status: 401, reject: true }, { status: 200, data: [{ question: 'q' }] }]);
@@ -76,7 +76,7 @@ describe('one retry after a token refresh', () => {
     expect(sentAuth).toEqual(['Bearer old-token', 'Bearer new-token']);
   });
 
-  // Covers: FR-4.4-09 - HTTP 400 with an auth code
+  // HTTP 400 with an auth code (FR-032)
   it('replays once after an HTTP 400 with an auth code in the body', async () => {
     const captured: Captured[] = [];
     playSteps(captured, [
@@ -88,7 +88,7 @@ describe('one retry after a token refresh', () => {
     expect(refreshToken).toHaveBeenCalledTimes(1);
   });
 
-  // Covers: FR-4.4-09 - HTTP 200 with returnCode 401 in the body
+  // HTTP 200 with returnCode 401 in the body (FR-032)
   it('replays once after an HTTP 200 whose body carries returnCode 401', async () => {
     const captured: Captured[] = [];
     playSteps(captured, [
@@ -101,7 +101,7 @@ describe('one retry after a token refresh', () => {
     expect(captured).toHaveLength(2);
   });
 
-  // Covers: FR-4.4-09 - a failing replay passes the original error on; no third call
+  // a failing replay passes the original error on; no third call (FR-032)
   it('does not retry twice and passes the original error on when the replay fails', async () => {
     const captured: Captured[] = [];
     playSteps(captured, [{ status: 401, reject: true }]);
@@ -110,7 +110,7 @@ describe('one retry after a token refresh', () => {
     expect(refreshToken).toHaveBeenCalledTimes(1);
   });
 
-  // Covers: FR-4.4-09 - a 200 body that stays 401 after the replay passes the original body on
+  // a 200 body that stays 401 after the replay passes the original body on (FR-032)
   it('passes the original body on when a 200 returnCode 401 stays 401 after the replay', async () => {
     const captured: Captured[] = [];
     const body = { returnStatus: { returnCode: '401', returnMessage: 'expired' } };
@@ -119,7 +119,7 @@ describe('one retry after a token refresh', () => {
     expect(captured).toHaveLength(2);
   });
 
-  // Covers: FR-4.4-05, BR-3, E-13 - a logged-in session never retries
+  // a logged-in session never retries (FR-029, BR-3, E-13)
   it('does not retry when a logged-in session exists', async () => {
     loggedIn = true;
     const captured: Captured[] = [];
@@ -129,7 +129,7 @@ describe('one retry after a token refresh', () => {
     expect(refreshToken).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.4-06 - the token call itself (skipAuth) never retries
+  // the token call itself (skipAuth) never retries (FR-030)
   it('does not retry a skipAuth call', async () => {
     const captured: Captured[] = [];
     playSteps(captured, [{ status: 401, reject: true }]);
@@ -138,7 +138,7 @@ describe('one retry after a token refresh', () => {
     expect(refreshToken).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.4-09 - no new token means the original error passes on and no replay is sent
+  // no new token means the original error passes on and no replay is sent (FR-032)
   it('passes the original error on when the refresh gives no token', async () => {
     refreshToken.mockResolvedValue(undefined);
     const captured: Captured[] = [];
@@ -147,7 +147,7 @@ describe('one retry after a token refresh', () => {
     expect(captured).toHaveLength(1);
   });
 
-  // Covers: FR-4.4-09 - only auth failures are replayed
+  // only auth failures are replayed (FR-032)
   it('does not replay a 500 or a network failure', async () => {
     const captured: Captured[] = [];
     playSteps(captured, [{ status: 500, reject: true }]);
@@ -156,7 +156,7 @@ describe('one retry after a token refresh', () => {
     expect(refreshToken).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.4-04, FR-4.4-08 - standard headers on the replay, no X-BHFL-Auth anywhere
+  // standard headers on the replay, no X-BHFL-Auth anywhere (FR-028, FR-034)
   it('keeps the standard headers on the replay and never sends X-BHFL-Auth', async () => {
     const captured: Captured[] = [];
     playSteps(captured, [{ status: 401, reject: true }, { status: 200 }]);

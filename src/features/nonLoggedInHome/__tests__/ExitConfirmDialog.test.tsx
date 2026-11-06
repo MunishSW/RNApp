@@ -11,15 +11,15 @@ function setup(visible = true) {
 }
 
 describe('ExitConfirmDialog', () => {
-  // Covers: FR-4.8-01, P-11, TC-501 - exact message, "CANCEL" and "Okay"
-  it('[TC-501] shows "Are you sure you want to exit!" with "CANCEL" and "Okay"', () => {
+  // Covers: HOME_BACK_TC_001 - exact message, "CANCEL" and "Okay" (FR-058, P-11)
+  it('[HOME_BACK_TC_001] shows "Are you sure you want to exit!" with "CANCEL" and "Okay"', () => {
     setup();
     expect(screen.getByText('Are you sure you want to exit!')).toBeTruthy();
     expect(screen.getAllByRole('button').map(b => b.props.accessibilityLabel)).toEqual(['CANCEL', 'Okay']);
   });
 
-  // Covers: FR-4.8-02, P-11, P-12, TC-502 - handlers
-  it('[TC-502] calls the matching handler for "CANCEL" and "Okay"', () => {
+  // Covers: HOME_BACK_TC_002, HOME_BACK_TC_003 - handlers (FR-059, P-11, P-12)
+  it('[HOME_BACK_TC_002] calls the matching handler for "CANCEL" and "Okay"', () => {
     const { onCancel, onOkay } = setup();
     fireEvent.press(screen.getByRole('button', { name: 'CANCEL' }));
     expect(onCancel).toHaveBeenCalledTimes(1);
@@ -27,7 +27,7 @@ describe('ExitConfirmDialog', () => {
     expect(onOkay).toHaveBeenCalledTimes(1);
   });
 
-  // Covers: FR-4.8-02 - the Android back request on the dialog means cancel
+  // the Android back request on the dialog means cancel (FR-059)
   it('treats an Android back request as cancel', () => {
     const { onCancel, onOkay } = setup();
     fireEvent(screen.UNSAFE_getByType(Modal), 'requestClose');
@@ -35,7 +35,7 @@ describe('ExitConfirmDialog', () => {
     expect(onOkay).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.8-01 - modal for screen readers; hidden when not visible
+  // modal for screen readers; hidden when not visible (FR-058)
   it('is modal for screen readers and shows nothing when not visible', () => {
     setup();
     expect(screen.getByTestId('exit-confirm-dialog').props.accessibilityViewIsModal).toBe(true);

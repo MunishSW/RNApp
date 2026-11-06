@@ -51,8 +51,8 @@ afterEach(() => {
 });
 
 describe('Home accessibility (BRD 7.4, BR-12)', () => {
-  // Covers: FR-7.4-01, E-04, TC-601 - reading order: headline, tiles row-wise, Login
-  it('[TC-601] reads the headline, then the six tiles in order, then Login', () => {
+  // reading order: headline, tiles row-wise, Login (FR-066, E-04)
+  it('reads the headline, then the six tiles in order, then Login', () => {
     const { toJSON } = setup();
     const json = JSON.stringify(toJSON());
     const positions = [
@@ -64,15 +64,15 @@ describe('Home accessibility (BRD 7.4, BR-12)', () => {
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
   });
 
-  // Covers: FR-7.4-01, TC-602 - the six tiles and Login are buttons whose label equals the visible text
-  it('[TC-602] exposes the six tiles and Login as buttons labelled with their visible text', () => {
+  // the six tiles and Login are buttons whose label equals the visible text (FR-066)
+  it('exposes the six tiles and Login as buttons labelled with their visible text', () => {
     setup();
     const buttons = screen.getAllByRole('button');
     expect(buttons.map(b => b.props.accessibilityLabel)).toEqual([...TILE_LABELS, 'Login']);
     [...TILE_LABELS, 'Login'].forEach(label => expect(screen.getByText(label)).toBeTruthy());
   });
 
-  // Covers: FR-4.1-02, FR-4.2-02, E-04 - the illustration and tile icons are hidden from the accessibility tree
+  // the illustration and tile icons are hidden from the accessibility tree (FR-002, FR-011, E-04)
   it('hides the illustration and the six tile icons from screen readers', () => {
     const { toJSON } = setup();
     const hidden = JSON.stringify(toJSON()).split('"accessibilityElementsHidden":true').length - 1;
@@ -80,8 +80,8 @@ describe('Home accessibility (BRD 7.4, BR-12)', () => {
     expect(screen.queryAllByRole('image')).toHaveLength(0);
   });
 
-  // Covers: FR-7.4-04, TC-606 - every touch target is at least 44 x 44
-  it('[TC-606] gives every tile and the Login button a 44 x 44 touch target', () => {
+  // every touch target is at least 44 x 44 (FR-069)
+  it('gives every tile and the Login button a 44 x 44 touch target', () => {
     setFontScale(1);
     setup();
     TILE_LABELS.forEach(label => {
@@ -94,8 +94,8 @@ describe('Home accessibility (BRD 7.4, BR-12)', () => {
     expect(layout.ctaHeight + slop.top + slop.bottom).toBeGreaterThanOrEqual(44);
   });
 
-  // Covers: FR-4.2-03, E-01, TC-603 - at font scale 1.5 and 2 the tiles stack and nothing is fixed-height
-  it.each([1.5, 2])('[TC-603] stacks the tiles at font scale %s with no fixed text heights', scale => {
+  // at font scale 1.5 and 2 the tiles stack and nothing is fixed-height (FR-012, E-01)
+  it.each([1.5, 2])('stacks the tiles at font scale %s with no fixed text heights', scale => {
     setFontScale(scale);
     setup();
     expect(screen.queryByTestId('home-grid-row-1')).toBeNull();
@@ -109,7 +109,7 @@ describe('Home accessibility (BRD 7.4, BR-12)', () => {
     expect(screen.getByTestId('home-scroll')).toBeTruthy();
   });
 
-  // Covers: FR-4.2-03, TC-603 - at default settings the grid is the exact Figma layout
+  // at default settings the grid is the exact Figma layout (FR-012)
   it('keeps the 3 + 3 Figma grid at font scale 1', () => {
     setFontScale(1);
     setup();
@@ -117,7 +117,7 @@ describe('Home accessibility (BRD 7.4, BR-12)', () => {
     expect(screen.getByTestId('home-grid-row-2')).toBeTruthy();
   });
 
-  // Covers: FR-4.5-08, E-04 - the FAQ spinner and the failure dialog are announced
+  // the FAQ spinner and the failure dialog are announced (FR-042, E-04)
   it('announces the FAQ spinner and the failure dialog', async () => {
     (fetchFaq as jest.Mock).mockRejectedValue(new Error('500'));
     setup();
@@ -130,8 +130,8 @@ describe('Home accessibility (BRD 7.4, BR-12)', () => {
     );
   });
 
-  // Covers: FR-4.6-02, TC-607 - the popup is modal for screen readers
-  it('[TC-607] makes the Contact Us popup modal for screen readers', () => {
+  // the popup is modal for screen readers (FR-044)
+  it('makes the Contact Us popup modal for screen readers', () => {
     setup();
     fireEvent.press(screen.getByRole('button', { name: 'Contact Us' }));
     expect(screen.getByTestId('contact-popup').props.accessibilityViewIsModal).toBe(true);

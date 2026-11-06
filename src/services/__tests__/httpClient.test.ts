@@ -28,7 +28,7 @@ afterEach(() => {
 });
 
 describe('httpClient', () => {
-  // Covers: HOME_TOKEN_TC_001 — Bearer plus app-version, platform and device-details headers
+  // Covers: HOME_TOKEN_TC_001 - Bearer plus app-version, platform and device-details headers
   it('[HOME_TOKEN_TC_001] adds Bearer token and standard headers', async () => {
     const captured: Captured[] = [];
     stubAdapter(captured);
@@ -44,8 +44,7 @@ describe('httpClient', () => {
     });
   });
 
-  // Covers: HOME_TOKEN_TC_003 — request waits for the in-flight token
-  // Covers: NLMISC_TC_001 — token available before secured calls
+  // Covers: HOME_TOKEN_TC_003 - request waits for the in-flight token
   it('[HOME_TOKEN_TC_003] waits for the token provider before sending', async () => {
     const captured: Captured[] = [];
     stubAdapter(captured);

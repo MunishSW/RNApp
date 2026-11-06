@@ -10,7 +10,7 @@ function flat(button: { props: Record<string, unknown> }) {
 }
 
 describe('QuickLinkTile', () => {
-  // Covers: FR-4.2-02, BR-4, TC-606 - role button, label, Figma sizes and touch target
+  // role button, label, Figma sizes and touch target (FR-011, BR-4)
   it('renders a button with the tile label, width 96, padding 12 and 16, and a 44 minimum', () => {
     render(<QuickLinkTile tile={TILES[0]} icon={nonLoggedInHomeAssets.payNow} onPress={jest.fn()} />);
     const button = screen.getByRole('button', { name: 'Pay Now' });
@@ -24,7 +24,7 @@ describe('QuickLinkTile', () => {
     expect(style.minWidth).toBeGreaterThanOrEqual(44);
   });
 
-  // Covers: FR-4.2-02, FR-7.4-01 - accessibility label equals the visible text, icon hidden
+  // accessibility label equals the visible text, icon hidden (FR-011, FR-066)
   it('hides the decorative icon and keeps the label as the meaning', () => {
     const { toJSON } = render(
       <QuickLinkTile tile={TILES[0]} icon={nonLoggedInHomeAssets.payNow} onPress={jest.fn()} />,
@@ -36,7 +36,7 @@ describe('QuickLinkTile', () => {
     expect(screen.getByText('Pay Now')).toBeTruthy();
   });
 
-  // Covers: FR-4.2-02 - pressing reports the tile and gives feedback without a layout shift
+  // pressing reports the tile and gives feedback without a layout shift (FR-011)
   it('calls onPress with its tile and changes only opacity while pressed', () => {
     const onPress = jest.fn();
     render(<QuickLinkTile tile={TILES[1]} icon={nonLoggedInHomeAssets.ourProducts} onPress={onPress} />);
@@ -54,7 +54,7 @@ describe('QuickLinkTile', () => {
     expect({ ...pressed, opacity: undefined }).toEqual({ ...idle, opacity: undefined });
   });
 
-  // Covers: FR-4.2-04, E-07, TC-105 - Track Application uses the 63 wide label box so it wraps to two lines
+  // Track Application uses the 63 wide label box so it wraps to two lines (FR-013, E-07)
   it('uses the Figma label box widths and icon sizes', () => {
     const track = TILES[2];
     render(<QuickLinkTile tile={track} icon={nonLoggedInHomeAssets.trackApplication} onPress={jest.fn()} />);
@@ -65,7 +65,7 @@ describe('QuickLinkTile', () => {
     expect(TILES.map(t => t.labelWidth)).toEqual([63, 74, 63, 82, 63, 63]);
   });
 
-  // Covers: FR-4.2-03, E-01 - stacked tiles are a full-width row with a left-aligned label
+  // stacked tiles are a full-width row with a left-aligned label (FR-012, E-01)
   it('becomes a full-width row with a flexible label when stacked', () => {
     render(<QuickLinkTile tile={TILES[3]} icon={nonLoggedInHomeAssets.faqs} onPress={jest.fn()} stacked />);
     const style = flat(screen.getByRole('button', { name: 'FAQs' }));

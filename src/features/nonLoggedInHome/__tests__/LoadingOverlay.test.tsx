@@ -6,7 +6,7 @@ import { LoadingOverlay } from '../components/LoadingOverlay';
 afterEach(() => jest.restoreAllMocks());
 
 describe('LoadingOverlay', () => {
-  // Covers: FR-4.5-03, FR-4.5-08, E-04 - visible spinner is modal, labelled and announced
+  // Covers: HOME_FAQ_TC_004 - visible spinner is modal, labelled and announced (FR-037, FR-042, E-04)
   it('shows a modal, labelled spinner and announces it', () => {
     const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility').mockImplementation(() => undefined);
     render(<LoadingOverlay visible />);
@@ -17,7 +17,7 @@ describe('LoadingOverlay', () => {
     expect(announce).toHaveBeenCalledWith('Loading');
   });
 
-  // Covers: FR-4.5-03 - hidden when not visible
+  // hidden when not visible (FR-037)
   it('renders nothing when not visible and does not announce', () => {
     const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility').mockImplementation(() => undefined);
     announce.mockClear();
@@ -26,7 +26,7 @@ describe('LoadingOverlay', () => {
     expect(announce).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.5-03 - Android back is swallowed while loading
+  // Android back is swallowed while loading (FR-037)
   it('swallows the Android back request', () => {
     render(<LoadingOverlay visible />);
     const modal = screen.UNSAFE_getByType(Modal);

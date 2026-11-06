@@ -22,8 +22,8 @@ afterEach(() => {
 });
 
 describe('fetch-faq contract (contracts/fetch-faq.md)', () => {
-  // Covers: FR-4.4-08, FR-4.5-03, P-08, TC-302 - Bearer plus standard headers, no X-BHFL-Auth
-  it('[TC-302] sends Bearer, app-version, platform and device-details and no X-BHFL-Auth', async () => {
+  // Covers: HOME_TOKEN_TC_001 - Bearer plus standard headers, no X-BHFL-Auth (FR-034, FR-037, P-08)
+  it('[HOME_TOKEN_TC_001] sends Bearer, app-version, platform and device-details and no X-BHFL-Auth', async () => {
     setPlatformOS('ios');
     setTokenProvider(async () => 'faq-token');
     const captured: Captured[] = [];
@@ -40,8 +40,8 @@ describe('fetch-faq contract (contracts/fetch-faq.md)', () => {
     expect(h.has('X-BHFL-Auth')).toBe(false);
   });
 
-  // Covers: FR-4.5-04, FR-4.5-05, TV-2, TC-304, TC-305 - array kept, anything else is empty
-  it('[TC-305] returns the array and treats every non-array as empty', async () => {
+  // Covers: HOME_FAQ_TC_002 - array kept, anything else is empty (FR-038, FR-039, TV-2)
+  it('[HOME_FAQ_TC_002] returns the array and treats every non-array as empty', async () => {
     stub([], () => [{ question: 'q', answer: 'a' }]);
     await expect(fetchFaq()).resolves.toHaveLength(1);
     for (const body of [[], {}, 'x', null, 5]) {
@@ -50,8 +50,8 @@ describe('fetch-faq contract (contracts/fetch-faq.md)', () => {
     }
   });
 
-  // Covers: FR-4.5-06, N-02, TC-303 - a failed request rejects so the caller can show the dialog
-  it('[TC-303] rejects on a server error', async () => {
+  // Covers: HOME_NEG_TC_001 - a failed request rejects so the caller can show the dialog (FR-040, N-02)
+  it('[HOME_NEG_TC_001] rejects on a server error', async () => {
     stub([], () => new Error('Request failed with status code 500'));
     await expect(fetchFaq()).rejects.toThrow('500');
   });

@@ -50,7 +50,7 @@ afterEach(() => {
 });
 
 describe('authService', () => {
-  // Covers: HOME_TOKEN_TC_007 — token held in memory and in encrypted storage key auth_token_Nonlogged
+  // Covers: HOME_TOKEN_TC_007 - token held in memory and in encrypted storage key auth_token_Nonlogged
   it('[HOME_TOKEN_TC_007] stores the token in memory and under auth_token_Nonlogged', async () => {
     stub([], async () => ({ token: 'jwt-1' }));
     await requestNonLoggedToken();
@@ -59,7 +59,7 @@ describe('authService', () => {
     expect(NON_LOGGED_TOKEN_KEY).toBe('auth_token_Nonlogged');
   });
 
-  // Covers: HOME_TOKEN_TC_006 — username and password are encrypted, never plain
+  // Covers: HOME_TOKEN_TC_006 - username and password are encrypted, never plain
   it('[HOME_TOKEN_TC_006] sends encrypted username and password only', async () => {
     const captured: Captured[] = [];
     stub(captured, async () => ({ token: 'jwt' }));
@@ -71,7 +71,7 @@ describe('authService', () => {
     expect(JSON.stringify(sent)).not.toContain('"test-user"');
   });
 
-  // Covers: HOME_TOKEN_TC_002 — 10 s timeout, silent failure
+  // Covers: HOME_TOKEN_TC_002 - 10 s timeout, silent failure
   it('[HOME_TOKEN_TC_002] uses a 10 s timeout and swallows a timeout error', async () => {
     const captured: Captured[] = [];
     stub(captured, async () => {
@@ -85,7 +85,7 @@ describe('authService', () => {
     expect(store.getState().token.nonLoggedToken).toBeNull();
   });
 
-  // Covers: HOME_STATE_TC_003 — token failure handled silently
+  // Covers: HOME_STATE_TC_003 - token failure handled silently
   it('swallows 5xx and non-string tokens (TV-1)', async () => {
     stub([], async () => {
       throw new Error('Request failed with status code 500');
@@ -100,8 +100,7 @@ describe('authService', () => {
     expect(store.getState().token.nonLoggedToken).toBeNull();
   });
 
-  // Covers: HOME_TOKEN_TC_003 — an early call waits for the in-flight token
-  // Covers: NLMISC_TC_001 — token is available to secured calls
+  // Covers: HOME_TOKEN_TC_003 - an early call waits for the in-flight token
   it('[HOME_TOKEN_TC_003] getCurrentNonLoggedToken waits for the in-flight request', async () => {
     let release: () => void = () => undefined;
     let adapterCalled: () => void = () => undefined;
@@ -121,7 +120,7 @@ describe('authService', () => {
     await expect(early).resolves.toBe('late');
   });
 
-  // Covers: HOME_TOKEN_TC_004 — stale logged-in token never used as non-logged token
+  // Covers: HOME_TOKEN_TC_004 - stale logged-in token never used as non-logged token
   it('[HOME_TOKEN_TC_004] never returns the logged-in token and requests a fresh one', async () => {
     store.dispatch(setLoggedInToken('LOGGED-IN'));
     await expect(getCurrentNonLoggedToken()).resolves.toBeUndefined();
@@ -132,7 +131,6 @@ describe('authService', () => {
     await expect(getCurrentNonLoggedToken()).resolves.toBe('fresh');
   });
 
-  // Covers: NLMISC_TC_022 — no extra token calls beyond app start + Home mount
   it('start runs once per launch; each Home mount adds exactly one request', async () => {
     const captured: Captured[] = [];
     stub(captured, async () => ({ token: 'jwt' }));

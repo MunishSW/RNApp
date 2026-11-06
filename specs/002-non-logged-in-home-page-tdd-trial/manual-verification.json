@@ -1,0 +1,5 @@
+{
+  "HOME_NET_TC_009": "manual - cold-start timing on a mid-range device from splash end (PERF-1, 2 s)",
+  "HOME_NET_TC_010": "manual - 50 open/close cycles with a memory profiler on device (PERF-5)",
+  "HOME_NET_TC_011": "manual - side-by-side layout and flow check on Android and iOS devices"
+}

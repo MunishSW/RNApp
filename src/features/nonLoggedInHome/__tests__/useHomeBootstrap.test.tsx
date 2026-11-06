@@ -20,7 +20,7 @@ beforeEach(() => {
 afterEach(() => jest.restoreAllMocks());
 
 describe('useHomeBootstrap', () => {
-  // Covers: FR-4.4-01, FR-4.7-01, BR-9 - one token request and one version check per mount
+  // one token request and one version check per mount (FR-025, FR-048, BR-9)
   it('requests the token and checks the version once per mount', async () => {
     check.mockResolvedValue({ kind: 'none' });
     const { rerender } = renderHook(() => useHomeBootstrap());
@@ -31,7 +31,7 @@ describe('useHomeBootstrap', () => {
     expect(check).toHaveBeenCalledTimes(1);
   });
 
-  // Covers: FR-4.7-02, BR-9 - Home is not blocked while the check is pending
+  // Home is not blocked while the check is pending (FR-049, BR-9)
   it('starts with no dialog while the version call is pending', () => {
     check.mockReturnValue(new Promise(() => undefined));
     const { result } = renderHook(() => useHomeBootstrap());
@@ -39,7 +39,7 @@ describe('useHomeBootstrap', () => {
     expect(result.current.blocking).toBe(false);
   });
 
-  // Covers: FR-4.7-05, FR-4.7-06, FR-4.7-07, N-06, N-07 - outcomes surface as dialogs
+  // Covers: HOME_VER_TC_002, HOME_VER_TC_003, HOME_VER_TC_005 - outcomes surface as dialogs (FR-052, FR-053, FR-054, N-06, N-07)
   it.each([
     [{ kind: 'maintenance', message: 'down' }, true],
     [{ kind: 'mandatory', targetUrl: 'u' }, true],
@@ -52,23 +52,23 @@ describe('useHomeBootstrap', () => {
     expect(result.current.blocking).toBe(blocking);
   });
 
-  // Covers: FR-4.7-08, N-08, TC-410 - 401 shows nothing and clears the logged-in token silently
-  it('[TC-410] shows nothing for a session-expired answer and runs the silent logout', async () => {
+  // 401 shows nothing and clears the logged-in token silently (FR-055, N-08)
+  it('shows nothing for a session-expired answer and runs the silent logout', async () => {
     check.mockResolvedValue({ kind: 'sessionExpired', message: 'expired' });
     const { result } = renderHook(() => useHomeBootstrap());
     await waitFor(() => expect(logout).toHaveBeenCalledTimes(1));
     expect(result.current.outcome).toEqual({ kind: 'none' });
   });
 
-  // Covers: FR-4.7-09, N-09, TC-411 - a rejected version call fails open
-  it('[TC-411] stays on none when the version call rejects', async () => {
+  // Covers: HOME_VER_TC_009 - a rejected version call fails open (FR-056, N-09)
+  it('[HOME_VER_TC_009] stays on none when the version call rejects', async () => {
     check.mockRejectedValue(new Error('network'));
     const { result } = renderHook(() => useHomeBootstrap());
     await act(async () => undefined);
     expect(result.current.outcome).toEqual({ kind: 'none' });
   });
 
-  // Covers: FR-4.4-06, N-01 - a rejected token request is swallowed
+  // a rejected token request is swallowed (FR-030, N-01)
   it('swallows a rejected token request', async () => {
     (requestNonLoggedToken as jest.Mock).mockRejectedValue(new Error('timeout'));
     check.mockResolvedValue({ kind: 'none' });
@@ -77,7 +77,7 @@ describe('useHomeBootstrap', () => {
     expect(result.current.outcome).toEqual({ kind: 'none' });
   });
 
-  // Covers: FR-4.7-06, FR-4.7-07 - Update opens the store link, Exit closes the app, Skip dismisses
+  // Covers: HOME_VER_TC_004, HOME_VER_TC_005 - Update opens the store link, Exit closes the app, Skip dismisses (FR-053, FR-054)
   it('opens the store link, exits the app and dismisses the optional dialog', async () => {
     const open = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
     const exit = jest.spyOn(BackHandler, 'exitApp').mockImplementation(() => undefined);

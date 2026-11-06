@@ -16,7 +16,7 @@ beforeEach(() => {
 afterEach(() => jest.restoreAllMocks());
 
 describe('useCustomerCare', () => {
-  // Covers: FR-4.6-01, BR-7, P-06 - opens as a popup, not a route
+  // opens as a popup, not a route (FR-043, BR-7, P-06)
   it('opens and closes without navigating', () => {
     const { result } = renderHook(() => useCustomerCare(navigation));
     expect(result.current.visible).toBe(false);
@@ -27,7 +27,7 @@ describe('useCustomerCare', () => {
     expect(navigation.navigate).not.toHaveBeenCalled();
   });
 
-  // Covers: FR-4.6-03, P-06 - Call Us opens the dialer and closes the popup
+  // Covers: HOME_CONTACT_TC_005 - Call Us opens the dialer and closes the popup (FR-045, P-06)
   it('Call Us closes the popup and opens the phone dialer for 022-45297300', () => {
     const { result } = renderHook(() => useCustomerCare(navigation));
     act(() => result.current.open());
@@ -36,7 +36,7 @@ describe('useCustomerCare', () => {
     expect(result.current.visible).toBe(false);
   });
 
-  // Covers: FR-4.6-03 - Email Us opens the mail app addressed to the support address
+  // Covers: HOME_CONTACT_TC_005 - Email Us opens the mail app addressed to the support address (FR-045)
   it('Email Us closes the popup and opens the mail app', () => {
     const { result } = renderHook(() => useCustomerCare(navigation));
     act(() => result.current.open());
@@ -45,7 +45,7 @@ describe('useCustomerCare', () => {
     expect(result.current.visible).toBe(false);
   });
 
-  // Covers: FR-4.6-03 - Find Us opens the Branch locator
+  // Covers: HOME_CONTACT_TC_005 - Find Us opens the Branch locator (FR-045)
   it('Find Us closes the popup and navigates to the Branch locator', () => {
     const { result } = renderHook(() => useCustomerCare(navigation));
     act(() => result.current.open());
@@ -55,7 +55,7 @@ describe('useCustomerCare', () => {
     expect(result.current.visible).toBe(false);
   });
 
-  // Covers: FR-4.6-03 - a failing hand-off never throws
+  // a failing hand-off never throws (FR-045)
   it('does not throw when the dialer cannot open', async () => {
     (Linking.openURL as jest.Mock).mockRejectedValue(new Error('no dialer'));
     const { result } = renderHook(() => useCustomerCare(navigation));
@@ -64,8 +64,8 @@ describe('useCustomerCare', () => {
     await act(async () => undefined);
   });
 
-  // Covers: FR-4.6-04, TC-208 - focus returns to the Contact Us tile when the popup closes
-  it('[TC-208] moves accessibility focus back to the Contact Us tile on close', () => {
+  // Covers: HOME_CONTACT_TC_003 - focus returns to the Contact Us tile when the popup closes (FR-046)
+  it('[HOME_CONTACT_TC_003] moves accessibility focus back to the Contact Us tile on close', () => {
     jest.spyOn(ReactNativeModule, 'findNodeHandle').mockReturnValue(42);
     const focus = jest.spyOn(AccessibilityInfo, 'setAccessibilityFocus').mockImplementation(() => undefined);
     focus.mockClear();
@@ -75,7 +75,7 @@ describe('useCustomerCare', () => {
     expect(focus).toHaveBeenCalledWith(42);
   });
 
-  // Covers: FR-4.6-01 - opening twice does not stack
+  // opening twice does not stack (FR-043)
   it('ignores a second open while already open', () => {
     const { result } = renderHook(() => useCustomerCare(navigation));
     act(() => result.current.open());

@@ -60,8 +60,8 @@ afterEach(() => {
 });
 
 describe('lifecycle and cleanup (PERF-5, constitution VIII)', () => {
-  // Covers: PERF-5, TC-703 - 50 mount and unmount cycles leave no listener behind
-  it('[TC-703] leaves no back or navigation listener after 50 mount and unmount cycles', async () => {
+  // Covers: HOME_NET_TC_010 - 50 mount and unmount cycles leave no listener behind (PERF-5)
+  it('[HOME_NET_TC_010] leaves no back or navigation listener after 50 mount and unmount cycles', async () => {
     for (let i = 0; i < 50; i += 1) {
       const view = mount();
       await act(async () => undefined);
@@ -73,7 +73,7 @@ describe('lifecycle and cleanup (PERF-5, constitution VIII)', () => {
     expect(navRemoved).toBe(navAdded);
   });
 
-  // Covers: PERF-5 - opening and closing the popup 50 times does not add listeners that stay
+  // opening and closing the popup 50 times does not add listeners that stay (PERF-5)
   it('keeps the live listener count steady while the popup opens and closes 50 times', async () => {
     const view = mount();
     await act(async () => undefined);

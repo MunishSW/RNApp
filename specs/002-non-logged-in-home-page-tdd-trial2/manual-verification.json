@@ -1,0 +1,9 @@
+{
+  "HOME_CONTACT_TC_003": "manual (remaining part) - real TalkBack / VoiceOver focus placement on a device after the popup closes (unit test proves the focus call only)",
+  "HOME_CONTACT_TC_004": "manual (remaining part) - visual check that nothing is clipped at 2x text on a device (unit test proves the height cap and scroll container only)",
+  "HOME_FAQ_TC_004": "manual (remaining part) - native touch blocking by the modal needs a device (unit test proves modal, transparent, blocking props only)",
+  "HOME_NET_TC_007": "manual (remaining part) - visual no-clipping on a real 320 x 568 device (unit test proves scroll container only)",
+  "HOME_NET_TC_009": "manual - cold-start timing on a mid-range device from splash end (PERF-1, 2 s)",
+  "HOME_NET_TC_010": "manual - 50 open/close cycles with a memory profiler on device (PERF-5)",
+  "HOME_NET_TC_011": "manual - side-by-side layout and flow check on Android and iOS devices"
+}

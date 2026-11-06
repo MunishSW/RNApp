@@ -18,7 +18,7 @@ afterEach(() => {
 });
 
 describe('useTextScaleLayout', () => {
-  // Covers: FR-4.2-03, BR-4, E-01, TC-603 - stack from font scale 1.5
+  // stack from font scale 1.5 (FR-012, BR-4, E-01)
   it.each([
     [1, false],
     [1.49, false],

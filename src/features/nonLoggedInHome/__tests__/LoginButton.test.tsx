@@ -11,7 +11,7 @@ function flat(button: { props: Record<string, unknown> }) {
 }
 
 describe('LoginButton', () => {
-  // Covers: FR-4.3-01, BR-8, TC-104 - label "Login", role button, 307 x 40, radius 82
+  // label "Login", role button, 307 x 40, radius 82 (FR-020, BR-8)
   it('renders a "Login" button with the Figma size and radius', () => {
     render(<LoginButton label={LOGIN_LABEL} onPress={jest.fn()} />);
     const button = screen.getByRole('button', { name: 'Login' });
@@ -25,7 +25,7 @@ describe('LoginButton', () => {
     expect(button.props.accessibilityLabel).toBe('Login');
   });
 
-  // Covers: FR-4.3-01, TC-104 - gradient stops and angle come from the tokens
+  // gradient stops and angle come from the tokens (FR-020)
   it('draws the gradient from the token stops and angle', () => {
     const { toJSON } = render(<LoginButton label={LOGIN_LABEL} onPress={jest.fn()} />);
     const json = JSON.stringify(toJSON());
@@ -43,7 +43,7 @@ describe('LoginButton', () => {
     expect(line.y2).toBeGreaterThan(line.y1);
   });
 
-  // Covers: FR-4.3-03, BR-8, P-02 - never disabled, press calls the handler
+  // never disabled, press calls the handler (FR-022, BR-8, P-02)
   it('is never disabled and calls the handler on press', () => {
     const onPress = jest.fn();
     render(<LoginButton label={LOGIN_LABEL} onPress={onPress} />);
@@ -54,7 +54,7 @@ describe('LoginButton', () => {
     expect(onPress).toHaveBeenCalledTimes(2);
   });
 
-  // Covers: FR-4.3-04, TC-606 - touch height reaches 44 with the extra hit area
+  // touch height reaches 44 with the extra hit area (FR-023)
   it('reaches a 44 high touch target through its hit area', () => {
     render(<LoginButton label={LOGIN_LABEL} onPress={jest.fn()} />);
     const button = screen.getByRole('button', { name: 'Login' });

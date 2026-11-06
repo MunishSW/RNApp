@@ -24,8 +24,8 @@ afterEach(() => {
 });
 
 describe('version service contract (contracts/force-update.md)', () => {
-  // Covers: FR-4.7-01, FR-4.4-08, TV-5 - endpoint, body, Bearer and standard headers, no X-BHFL-Auth
-  it('[TC-413] posts { version, user_agent } to forceUpdate/Secured with Bearer and no X-BHFL-Auth', async () => {
+  // Covers: HOME_VER_TC_010 - endpoint, body, Bearer and standard headers, no X-BHFL-Auth (FR-048, FR-034, TV-5)
+  it('[HOME_VER_TC_010] posts { version, user_agent } to forceUpdate/Secured with Bearer and no X-BHFL-Auth', async () => {
     setPlatformOS('android');
     setTokenProvider(async () => 'tok');
     const captured: Captured[] = [];
@@ -40,8 +40,8 @@ describe('version service contract (contracts/force-update.md)', () => {
     expect(h.has('X-BHFL-Auth')).toBe(false);
   });
 
-  // Covers: TV-5, E-09 - iOS sends exactly "iOS"
-  it('[TC-413] sends user_agent exactly "iOS" on iOS', async () => {
+  // Covers: HOME_VER_TC_010 - iOS sends exactly "iOS" (TV-5, E-09)
+  it('[HOME_VER_TC_010] sends user_agent exactly "iOS" on iOS', async () => {
     setPlatformOS('ios');
     const captured: Captured[] = [];
     stub(captured, () => ok);
@@ -49,15 +49,15 @@ describe('version service contract (contracts/force-update.md)', () => {
     expect(JSON.parse(String(captured[0].data)).user_agent).toBe('iOS');
   });
 
-  // Covers: TV-3, E-08, TC-412 - numeric dotted compare, missing parts count as 0
-  it('[TC-412] compares versions numerically with missing parts as 0', () => {
+  // Covers: HOME_VER_TC_007 - numeric dotted compare, missing parts count as 0 (TV-3, E-08)
+  it('[HOME_VER_TC_007] compares versions numerically with missing parts as 0', () => {
     expect(compareVersions('1.8.9', '1.8.10')).toBe(-1);
     expect(compareVersions('1.8.10', '1.8.9')).toBe(1);
     expect(compareVersions('1.8', '1.8.0')).toBe(0);
     expect(compareVersions('2', '1.9.9')).toBe(1);
   });
 
-  // Covers: contracts/force-update.md classification order - 401 first, then message, then maintenance, then update
+  // 401 first, then message, then maintenance, then update (contracts/force-update.md classification order)
   it('classifies in the documented order', () => {
     const outdated = {
       version: '1.9.0',
@@ -80,16 +80,16 @@ describe('version service contract (contracts/force-update.md)', () => {
     expect(classifyVersionResponse({ ...ok, ...outdated, force_update_flag: 'N', optional_update: 'N' }, '1.8.9').kind).toBe('none');
   });
 
-  // Covers: TV-4, N-07 - only "Active" enforces
-  it('[TC-408] enforces only when status is "Active"', () => {
+  // Covers: HOME_VER_TC_006 - only "Active" enforces (TV-4, N-07)
+  it('[HOME_VER_TC_006] enforces only when status is "Active"', () => {
     const body = { ...ok, version: '1.9.0', target_url: 'u', force_update_flag: 'Y' };
     expect(classifyVersionResponse({ ...body, status: 'Active' }, '1.8.9').kind).toBe('mandatory');
     expect(classifyVersionResponse({ ...body, status: 'Inactive' }, '1.8.9').kind).toBe('none');
     expect(classifyVersionResponse({ ...body, status: 'active' }, '1.8.9').kind).toBe('none');
   });
 
-  // Covers: FR-4.7-09, N-09, TC-411 - a failed call or empty body fails open
-  it('[TC-411] fails open on a thrown request and on null and empty bodies', async () => {
+  // Covers: HOME_VER_TC_009 - a failed call or empty body fails open (FR-056, N-09)
+  it('[HOME_VER_TC_009] fails open on a thrown request and on null and empty bodies', async () => {
     stub([], () => new Error('Network Error'));
     await expect(checkAppVersion()).resolves.toEqual({ kind: 'none' });
     stub([], () => null);
