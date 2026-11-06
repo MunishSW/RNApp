@@ -5,5 +5,5 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!((jest-)?react-native|@react-native(-community)?|immer|react-redux|@reduxjs/toolkit|redux|redux-thunk|reselect|@react-navigation)/)',
   ],
-  testPathIgnorePatterns: ['/node_modules/', '/\.claude/', '/specs/'],
+  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/.claude/', '<rootDir>/specs/'],
 };

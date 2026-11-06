@@ -2,6 +2,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import NonLoggedHomeScreen from '../features/nonLoggedHome/NonLoggedHomeScreen';
+import NonLoggedInHomeScreen from '../features/nonLoggedInHome/NonLoggedInHomeScreen';
+import PayNowScreen from '../features/nonLoggedInHome/PayNowScreen';
 import { ROUTES, RootStackParamList } from './routes';
 import { StubScreen } from './stubs/StubScreen';
 
@@ -15,6 +17,8 @@ export default function RootNavigator() {
         initialRouteName={ROUTES.NonLoggedHome}
         screenOptions={{ headerShown: false }}>
         <Stack.Screen name={ROUTES.NonLoggedHome} component={NonLoggedHomeScreen} />
+        <Stack.Screen name={ROUTES.NonLoggedInHome} component={NonLoggedInHomeScreen} />
+        <Stack.Screen name={ROUTES.NonLoggedInPayNow} component={PayNowScreen} />
         <Stack.Screen name={ROUTES.LoginScreen} component={StubScreen} />
         <Stack.Screen name={ROUTES.Products} component={StubScreen} />
         <Stack.Screen name={ROUTES.Offers} component={StubScreen} />

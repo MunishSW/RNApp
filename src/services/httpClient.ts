@@ -1,5 +1,6 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 import { ENV } from '../config/env';
+import { isAuthFailure, prepareReplay } from './authRetry';
 import { getAppVersion, getDeviceDetails, getPlatform } from './deviceInfo';
 
 declare module 'axios' {
@@ -38,6 +39,42 @@ apiClient.interceptors.request.use(async config => {
   config.headers.set('device-details', getDeviceDetails());
   return config;
 });
+
+/** Replays a call once after a token refresh; undefined means pass the original result on. */
+async function replayOnce(config: InternalAxiosRequestConfig | undefined) {
+  const replay = await prepareReplay(config);
+  if (!replay) {
+    return undefined;
+  }
+  try {
+    const response = await apiClient.request(replay);
+    // A replay that is itself an auth failure counts as a failed retry.
+    return isAuthFailure(response.status, response.data) ? undefined : response;
+  } catch {
+    return undefined;
+  }
+}
+
+// Auth failure (HTTP 401, 400 with an auth code, or 200 with returnCode 401): refresh the token, retry once.
+// If the retry fails the original response or error is passed on and no popup is raised here.
+apiClient.interceptors.response.use(
+  async response => {
+    if (isAuthFailure(response.status, response.data)) {
+      return (await replayOnce(response.config)) ?? response;
+    }
+    return response;
+  },
+  async error => {
+    const failed = error?.response;
+    if (failed && isAuthFailure(failed.status, failed.data)) {
+      const replayed = await replayOnce(error.config);
+      if (replayed) {
+        return replayed;
+      }
+    }
+    return Promise.reject(error);
+  },
+);
 
 export interface PostOptions {
   baseURL?: string;

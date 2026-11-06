@@ -1,6 +1,7 @@
 import { ENV, TOKEN_TIMEOUT_MS } from '../config/env';
 import { store } from '../store';
 import { setNonLoggedToken } from '../store/tokenSlice';
+import { setAuthRefresher } from './authRetry';
 import { encryptField } from './encryptionNative';
 import { post, setTokenProvider } from './httpClient';
 import { NON_LOGGED_TOKEN_KEY, secureStorage } from './secureStorage';
@@ -68,6 +69,11 @@ export async function getCurrentNonLoggedToken(): Promise<string | undefined> {
 
 export function registerTokenProvider(): void {
   setTokenProvider(getCurrentNonLoggedToken);
+  // One retry after a token refresh on an auth failure (BRD 8.4.3); never with a logged-in session.
+  setAuthRefresher({
+    refreshToken: requestNonLoggedToken,
+    hasLoggedInSession: () => store.getState().token.loggedInToken !== null,
+  });
 }
 
 /** Test seam. */

@@ -9,6 +9,8 @@ export const ROUTES = {
   PayNowWebView: 'PayNowWebView',
   TrackApplication: 'TrackApplication',
   BranchLocator: 'BranchLocator',
+  NonLoggedInHome: 'NonLoggedInHome',
+  NonLoggedInPayNow: 'NonLoggedInPayNow',
 } as const;
 
 export type RouteName = (typeof ROUTES)[keyof typeof ROUTES];
@@ -20,6 +22,10 @@ export interface PayNowParams {
   loader: boolean;
 }
 
+export interface NonLoggedInPayNowParams {
+  title: string;
+}
+
 export type RootStackParamList = {
   NonLoggedHome: undefined;
   LoginScreen: undefined;
@@ -29,4 +35,6 @@ export type RootStackParamList = {
   PayNowWebView: PayNowParams;
   TrackApplication: undefined;
   BranchLocator: undefined;
+  NonLoggedInHome: undefined;
+  NonLoggedInPayNow: NonLoggedInPayNowParams;
 };

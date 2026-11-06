@@ -47,6 +47,8 @@ export const themes: Record<'light' | 'dark' | 'highContrast', ThemeTokens> = {
 export const typography = {
   fontFamilyRegular: 'Rubik-Regular',
   fontFamilyMedium: 'Rubik-Medium',
+  fontFamilySemiBold: 'Rubik-SemiBold',
+  fontFamilyBold: 'Rubik-Bold',
   headline: { fontSize: 16, lineHeight: 22 },
   tileLabel: { fontSize: 11.889 },
   cta: { fontSize: 14 },
