@@ -34,7 +34,7 @@ RULES
 9. Do the work yourself. No workflows, background jobs or sub-agents unless the user asks.
 10. STOP AND ASK: write nothing, print the question with evidence (tables, counts, A.1 stack, A.2 test-file list), end the run. If you cannot ask, the run ends. Never continue on a guess.
 11. Spec-vs-code drift is only reported: "SPEC-DRIFT FR-NNN" with file:line, plus an Open-item task. Never fix code or test unbuilt behaviour.
-12. DO NOT RUN TEST RUNNERS OR CHECKER FOREGROUND/BACKGROUND. Never run npx jest, flutter test, ng test, gradlew, xcodebuild. Proof is established by static code analysis (quoting real assertion lines). Step H prints the test runner and checker commands for the user to run in their own terminal.
+12. DO NOT RUN TEST RUNNERS OR CHECKER FOREGROUND/BACKGROUND. Never run npx jest, flutter test, ng test, gradlew, xcodebuild. Proof is established by static code analysis (quoting real assertion lines). Step H prints the test runner, coverage report generator, and checker commands for the user to run in their own terminal.
 13. TEST RUNNER COMMAND MUST ONLY TARGET AFFECTED FILES. The test runner command output in Step H must list ONLY the test files affected by that spec (the new tests authored and existing test files modified), NEVER the entire suite or unrelated test files.
 
 STEP A - Inventory (read only)
@@ -133,9 +133,11 @@ STEP H - Final Reply
 1. Files created/modified with counts: cases (in/out of scope), FRs, tasks touched/added, tests added, production test identifiers.
 2. Counts: COVERED / PARTIAL / FAILING / GAP / MANUAL / DIVERGENT / QA-SUSPECT / OUT-OF-SCOPE, and steps proven/in scope.
 3. Retrofit Findings (divergences, spec drift, qa-suspect, gaps, orphans).
-4. Command block for user terminal execution (DO NOT execute test runners or check-retrofit yourself):
+4. Command block for user terminal execution (DO NOT execute test runners or checker yourself):
    Run feature tests to verify suite green (ONLY the test files affected by this spec):
      <stack test command, e.g. npx jest <affected-test-files> --watchAll=false>
+   Generate / refresh coverage report and traceability:
+     node specs/tools/assemble-retrofit.js --spec specs/<feature> --tests <affected-test-files>
    Run mechanical checker (exits 0 when all checks pass, 1 on any FAIL):
      node specs/RETROFIT-TEST/check-retrofit.js --spec specs/<feature> --tests <affected-test-files>
    CRITICAL: In the test runner command, list ONLY the test files affected by that spec (the new tests authored and any existing test files modified), NEVER the entire suite, all test directories, or unrelated test files.

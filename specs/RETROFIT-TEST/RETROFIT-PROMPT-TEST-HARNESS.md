@@ -199,7 +199,14 @@ which cases it would class MANUAL for native-only behaviour. Judge against ST1-S
 ### 4.1 Mechanical checker (run on every output)
 
 ```bash
-node specs/RETROFIT-TEST/check-retrofit.js --spec <spec-folder> --tests <feature-test-dir>[,<more dirs or files>]
+# 1. Run feature tests (affected test files only):
+npx jest <affected-test-files> --watchAll=false
+
+# 2. Generate / refresh coverage report and traceability:
+node specs/tools/assemble-retrofit.js --spec <spec-folder> --tests <feature-test-dir-or-files>
+
+# 3. Run mechanical checker:
+node specs/RETROFIT-TEST/check-retrofit.js --spec <spec-folder> --tests <feature-test-dir-or-files>
 ```
 
 It re-derives the prompt's own Step F checks from the files: qa-cases.json schema and unique ids; approach

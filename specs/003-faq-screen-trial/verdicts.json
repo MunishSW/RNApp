@@ -1,0 +1,92 @@
+[
+  {
+    "id": "FAQ_FUNC_TC_001",
+    "approach": "unit-testable - FAQ accordion list displays all questions",
+    "tasks": "T013"
+  },
+  {
+    "id": "FAQ_FUNC_TC_002",
+    "approach": "unit-testable - corresponding answer expands on question tap",
+    "tasks": "T013"
+  },
+  {
+    "id": "FAQ_FUNC_TC_003",
+    "approach": "unit-testable - answer collapses on tapping expanded question again",
+    "tasks": "T013"
+  },
+  {
+    "id": "FAQ_FUNC_TC_004",
+    "approach": "unit-testable - formatted HTML content in answer renders with styles and list markers",
+    "tasks": "T024"
+  },
+  {
+    "id": "FAQ_FUNC_TC_005",
+    "approach": "unit-testable - empty response array displays empty state without crash",
+    "tasks": "T019"
+  },
+  {
+    "id": "FAQ_FUNC_TC_006",
+    "approach": "unit-testable - API failure uses stored/cached list when available",
+    "tasks": "T019"
+  },
+  {
+    "id": "FAQ_FUNC_TC_007",
+    "approach": "unit-testable - in-page error message and retry button display on API failure with no cache",
+    "tasks": "T019"
+  },
+  {
+    "id": "FAQ_FUNC_TC_008",
+    "approach": "unit-testable - route revisit on focus requests fresh data and updates list",
+    "tasks": "T022"
+  },
+  {
+    "id": "FAQ_FUNC_TC_009",
+    "approach": "unit-testable - long question text wraps with no numberOfLines limit or fixed height",
+    "tasks": "T013"
+  },
+  {
+    "id": "FAQ_FUNC_TC_010",
+    "approach": "unit-testable - long answer text renders in full without height limit within scrollable page",
+    "tasks": "T012"
+  },
+  {
+    "id": "FAQ_FUNC_TC_011",
+    "approach": "unit-testable - non-array/invalid response normalized safely to empty state without crash",
+    "tasks": "T019"
+  },
+  {
+    "id": "FAQ_FUNC_TC_012",
+    "approach": "unit-testable - back arrow and hardware back navigate to NonLoggedInHome",
+    "tasks": "T013, T025"
+  },
+  {
+    "id": "FAQ_FUNC_TC_013",
+    "approach": "unit-testable - rapid taps toggle state consistently without freeze or crash",
+    "tasks": "T013"
+  },
+  {
+    "id": "FAQ_FUNC_TC_014",
+    "approach": "unit-testable - loader displays while request is pending and hides upon response",
+    "tasks": "T019"
+  },
+  {
+    "id": "FAQ_FUNC_TC_015",
+    "approach": "unit-testable - only FAQ endpoint is requested and track application API is never called",
+    "tasks": "T031"
+  },
+  {
+    "id": "FAQ_FUNC_TC_016",
+    "approach": "unit-testable - controls have accessible roles, labels, states, and screen reader announcements",
+    "tasks": "T027"
+  },
+  {
+    "id": "FAQ_FUNC_TC_017",
+    "approach": "unit-testable - network/offline error displays error message, retry button, and alert role",
+    "tasks": "T019"
+  },
+  {
+    "id": "FAQ_FUNC_TC_018",
+    "approach": "unit-testable - gap: not built: session reset does not dispatch clearFaq to clear stored FAQ data",
+    "tasks": "T032"
+  }
+]

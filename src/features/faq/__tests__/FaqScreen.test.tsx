@@ -78,6 +78,7 @@ afterEach(() => {
 });
 
 describe('FaqScreen list (US1)', () => {
+  // Covers: FAQ_FUNC_TC_001 - FAQ accordion list displays all questions
   it('shows the header, one closed card per stored item and no loader', async () => {
     mockFetch.mockResolvedValue([A, B]);
     setup([A, B]);
@@ -114,6 +115,7 @@ describe('FaqScreen list (US1)', () => {
     expect(column.width).toBe('100%');
   });
 
+  // Covers: FAQ_FUNC_TC_002, FAQ_FUNC_TC_003 - answer expands on tap and collapses on second tap
   it('opens one card only, then closes it again on the second press', () => {
     mockFetch.mockReturnValue(new Promise(() => undefined));
     setup([A, B]);
@@ -138,6 +140,7 @@ describe('FaqScreen list (US1)', () => {
     expect(screen.getByText(B.answer)).toBeTruthy();
   });
 
+  // Covers: FAQ_FUNC_TC_013 - rapid presses do not freeze UI and flip only targeted card
   it('ends consistent after ten rapid presses on one card and flips only that card', () => {
     mockFetch.mockReturnValue(new Promise(() => undefined));
     setup([A, B]);
@@ -162,6 +165,7 @@ describe('FaqScreen list (US1)', () => {
     expect(isOpen(B.question)).toBe(false);
   });
 
+  // Covers: FAQ_FUNC_TC_009 - long question wraps fully with no line limit
   it('shows a very long question in full with no line limit and no fixed text height', () => {
     mockFetch.mockReturnValue(new Promise(() => undefined));
     const long = 'Very long question '.repeat(20).trim();
@@ -171,6 +175,7 @@ describe('FaqScreen list (US1)', () => {
     expect(StyleSheet.flatten(text.props.style).height).toBeUndefined();
   });
 
+  // Covers: FAQ_FUNC_TC_012 - header back arrow and hardware back navigate to NonLoggedInHome
   it('goes to Home from the header back arrow and from the hardware back', () => {
     mockFetch.mockReturnValue(new Promise(() => undefined));
     const add = BackHandler.addEventListener as jest.Mock;
@@ -182,6 +187,7 @@ describe('FaqScreen list (US1)', () => {
 });
 
 describe('FaqScreen loading, empty and error (US2)', () => {
+  // Covers: FAQ_FUNC_TC_014 - loader displays during pending request and hides upon response
   it('shows the loader while the first request is pending and then the list', async () => {
     const pending = deferred<typeof A[]>();
     mockFetch.mockReturnValue(pending.promise);
@@ -195,6 +201,7 @@ describe('FaqScreen loading, empty and error (US2)', () => {
     expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 
+  // Covers: FAQ_FUNC_TC_007, FAQ_FUNC_TC_017 - API failure with no cache displays error message and retry button
   it('shows the error message and Retry when the first request fails, and the list after Retry', async () => {
     mockFetch.mockRejectedValueOnce(new Error('offline'));
     setup();
@@ -222,6 +229,7 @@ describe('FaqScreen loading, empty and error (US2)', () => {
     expect(screen.getByText(ERROR)).toBeTruthy();
   });
 
+  // Covers: FAQ_FUNC_TC_005 - empty response array displays empty message without crash
   it('shows the empty message with no dialog and no button for an empty answer', async () => {
     mockFetch.mockResolvedValue([]);
     setup();
@@ -231,6 +239,7 @@ describe('FaqScreen loading, empty and error (US2)', () => {
     expect(screen.queryByTestId('faq-loader')).toBeNull();
   });
 
+  // Covers: FAQ_FUNC_TC_011 - non-list response normalized safely to empty state without crash
   it('shows the empty message for a non-list answer without a crash', async () => {
     mockFetch.mockResolvedValue('not a list');
     setup();
@@ -238,6 +247,7 @@ describe('FaqScreen loading, empty and error (US2)', () => {
     expect(screen.getByText('No FAQs are available right now.')).toBeTruthy();
   });
 
+  // Covers: FAQ_FUNC_TC_006 - API refresh failure keeps stored list displayed
   it('shows nothing extra when a refresh fails and a list is stored', async () => {
     mockFetch.mockRejectedValue(new Error('offline'));
     setup([A, B]);
@@ -250,6 +260,7 @@ describe('FaqScreen loading, empty and error (US2)', () => {
 });
 
 describe('FaqScreen refresh on return (US3)', () => {
+  // Covers: FAQ_FUNC_TC_008 - route revisit on focus requests fresh list and replaces old list
   it('requests the list again on return, replaces the old list, and closes all cards', async () => {
     mockFetch.mockResolvedValueOnce([A, B]);
     const { emit, store } = setup([A, B]);
@@ -287,6 +298,7 @@ describe('FaqScreen refresh on return (US3)', () => {
 });
 
 describe('FaqScreen formatted answers (US4)', () => {
+  // Covers: FAQ_FUNC_TC_004 - formatted HTML content in answer renders with styles and list markers
   it('shows bold text, a list and a link, and opens the link through Linking', async () => {
     const open = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
     const rich = {

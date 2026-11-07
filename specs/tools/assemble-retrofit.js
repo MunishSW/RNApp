@@ -97,13 +97,31 @@ function main() {
         });
       }
 
+      const caseTasksMap = new Map();
       for (const c of cases) {
         if (vMap.has(c.id)) {
           const v = vMap.get(c.id);
           if (v.approach) c.approach = v.approach;
-          if (v.tasks) c.tasks = Array.isArray(v.tasks) ? v.tasks.join(', ') : v.tasks;
+          if (v.tasks) caseTasksMap.set(c.id, Array.isArray(v.tasks) ? v.tasks.join(', ') : v.tasks);
         }
       }
+      // Ensure qa-cases.json strictly retains only the 10 allowed keys (Check C1)
+      qaData.cases = cases.map((c) => ({
+        approach: c.approach || '',
+        category: c.category || '',
+        desc: c.desc || '',
+        expected: c.expected || '',
+        id: c.id,
+        module: c.module || '',
+        scenario: c.scenario || '',
+        source: c.source || '',
+        status: c.status || 'Not Executed',
+        type: c.type || ''
+      }));
+      // Keep tasks in memory for table assembly
+      cases.forEach((c) => {
+        if (caseTasksMap.has(c.id)) c.tasks = caseTasksMap.get(c.id);
+      });
       fs.writeFileSync(qaCasesPath, JSON.stringify(qaData, null, 2) + '\n', 'utf8');
       console.log(`[assemble-retrofit] Merged verdicts from ${args.verdicts} into qa-cases.json`);
     }

@@ -93,6 +93,7 @@ describe('FaqScreen accessibility', () => {
     expect(screen.getByRole('header').props.children).toBe('FAQs');
   });
 
+  // Covers: FAQ_FUNC_TC_016 - card buttons provide accessibility label and expanded state
   it('gives every card a button role, the question as label and an expanded state that follows the press', async () => {
     setup(ITEMS);
     await act(async () => undefined);

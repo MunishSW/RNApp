@@ -93,7 +93,7 @@ New code is under `src/features/faq/`. Tests sit in `__tests__/` next to the cod
 ### Tests for User Story 2
 
 - [X] T018 [P] [US2] `__tests__/FaqStateView.test.tsx`: loading shows an indicator announced to screen readers; empty shows "No FAQs are available right now." with no button; error shows the exact message and one "Retry" button whose press calls the handler; error message announced (FR-022, FR-024, FR-025; E-04) **Maps**: FR-022, FR-024, FR-025 · **Accept**: the state view test proves loading, empty and error variants, the Retry press and the announcements
-- [X] T019 [US2] Add to `FaqScreen.test.tsx`: no stored list and a pending request shows the loader and blocks touches; success then shows the list; failure shows error and Retry; Retry then success shows the list; empty answer shows the empty message; refresh failure with a stored list shows no message (FR-018, FR-022 to FR-024; BR-3, BR-4; N-01 to N-05) **Maps**: FR-018, FR-022, FR-023, FR-024 · **Accept**: screen tests prove loader, list after success, error with Retry, empty message and a silent failed refresh
+- [X] T019 [US2] Add to `FaqScreen.test.tsx`: no stored list and a pending request shows the loader and blocks touches; success then shows the list; failure shows error and Retry; Retry then success shows the list; empty answer shows the empty message; refresh failure with a stored list shows no message (FR-018, FR-022 to FR-024; BR-3, BR-4; N-01 to N-05) **Maps**: FR-018, FR-020, FR-022, FR-023, FR-024 · **Accept**: screen tests prove loader, list after success, error with Retry, empty message and a silent failed refresh
 
 ### Implementation for User Story 2
 
@@ -160,3 +160,28 @@ Setup (T001 to T004) → T005, T007 → T006, T008, T009 → US1 tests T010 to T
 - `src/features/faq/__tests__/isolation.test.ts` automates the T029 scope check.
 
 ---
+
+## TC -> Task coverage
+
+Counts: 18 QA cases = 17 covered + 0 partial + 0 manual + 1 gap + 0 divergent + 0 qa-suspect + 0 out-of-scope + 0 failing (parts must add up to the total).
+
+| TC (id + short description) | Task(s) | Test approach |
+|---|---|---|
+| FAQ_FUNC_TC_001 - Verify FAQ list displays questions and answers from API. | T013 | unit-testable - FAQ accordion list displays all questions |
+| FAQ_FUNC_TC_002 - Verify FAQ answer expands when user taps question. | T013 | unit-testable - corresponding answer expands on question tap |
+| FAQ_FUNC_TC_003 - Verify FAQ answer collapses when user taps expanded question again. | T013 | unit-testable - answer collapses on tapping expanded question again |
+| FAQ_FUNC_TC_004 - Verify HTML content in FAQ answer renders correctly. | T024 | unit-testable - formatted HTML content in answer renders with styles and list markers |
+| FAQ_FUNC_TC_005 - Verify FAQ screen handles empty response array. | T019 | unit-testable - empty response array displays empty state without crash |
+| FAQ_FUNC_TC_006 - Verify FAQ API failure uses cache when available. | T019 | unit-testable - API failure uses stored/cached list when available |
+| FAQ_FUNC_TC_007 - Verify FAQ API failure with no cache shows error. | T019 | unit-testable - in-page error message and retry button display on API failure with no cache |
+| FAQ_FUNC_TC_008 - Verify FAQ route revisit refreshes data. | T022 | unit-testable - route revisit on focus requests fresh data and updates list |
+| FAQ_FUNC_TC_009 - Verify long FAQ question text wraps properly. | T013 | unit-testable - long question text wraps with no numberOfLines limit or fixed height |
+| FAQ_FUNC_TC_010 - Verify long FAQ answer text is scrollable/readable. | T012 | unit-testable - long answer text renders in full without height limit within scrollable page |
+| FAQ_FUNC_TC_011 - Verify invalid FAQ response structure is normalized safely. | T019 | unit-testable - non-array/invalid response normalized safely to empty state without crash |
+| FAQ_FUNC_TC_012 - Verify back navigation from FAQ. | T013, T025 | unit-testable - back arrow and hardware back navigate to NonLoggedInHome |
+| FAQ_FUNC_TC_013 - Verify FAQ list remains stable during rapid expand/collapse. | T013 | unit-testable - rapid taps toggle state consistently without freeze or crash |
+| FAQ_FUNC_TC_014 - Verify loader appears during FAQ fetch. | T019 | unit-testable - loader displays while request is pending and hides upon response |
+| FAQ_FUNC_TC_015 - Verify FAQ content does not call track application API. | T031 | unit-testable - only FAQ endpoint is requested and track application API is never called |
+| FAQ_FUNC_TC_016 - Verify FAQ accessibility content is readable by screen reader labels where applicable. | T027 | unit-testable - controls have accessible roles, labels, states, and screen reader announcements |
+| FAQ_FUNC_TC_017 - Verify FAQ offline/network error handling. | T019 | unit-testable - network/offline error displays error message, retry button, and alert role |
+| FAQ_FUNC_TC_018 - Verify FAQ data does not persist incorrectly after logout/session reset. | T032 | unit-testable - gap: not built: session reset does not dispatch clearFaq to clear stored FAQ data |

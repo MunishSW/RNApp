@@ -61,6 +61,7 @@ describe('FaqAnswer', () => {
     expect(() => fireEvent.press(screen.getByText('help'))).not.toThrow();
   });
 
+  // Covers: FAQ_FUNC_TC_010 - long answer renders in full without height or line limit
   it('shows a long answer in full with no height or line limit', () => {
     const long = 'word '.repeat(400).trim();
     render(<FaqAnswer html={long} />);
