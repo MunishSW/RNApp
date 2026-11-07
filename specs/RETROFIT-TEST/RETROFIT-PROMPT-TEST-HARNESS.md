@@ -5,6 +5,7 @@ scenarios, fixtures, checks, determinism rules, report format. Files that go wit
 
 - The prompt under test: `specs/RETROFIT-PROMPT-v3.2.md`
 - The mechanical checker: `specs/RETROFIT-TEST/check-retrofit.js` (usage in Part 4)
+- The helper scripts: `specs/tools/prep-qa.js`, `specs/tools/flatten-frs.js`, `specs/tools/assemble-retrofit.js`
 
 ---
 
