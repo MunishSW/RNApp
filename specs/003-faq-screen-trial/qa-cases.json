@@ -121,7 +121,7 @@
       "type": "Positive"
     },
     {
-      "approach": "unit-testable - non-array/invalid response normalized safely to empty state without crash",
+      "approach": "unit-testable - non-list response normalized safely to empty state without crash",
       "category": "",
       "desc": "Verify invalid FAQ response structure is normalized safely.",
       "expected": "FAQ list should not crash and should show empty/fallback state.",
@@ -133,7 +133,7 @@
       "type": "Negative"
     },
     {
-      "approach": "unit-testable - back arrow and hardware back navigate to NonLoggedInHome",
+      "approach": "unit-testable - header back arrow and hardware back navigate to NonLoggedInHome",
       "category": "",
       "desc": "Verify back navigation from FAQ.",
       "expected": "User should return to non-logged home.",
@@ -145,7 +145,7 @@
       "type": "Positive"
     },
     {
-      "approach": "unit-testable - rapid taps toggle state consistently without freeze or crash",
+      "approach": "unit-testable - rapid toggling does not freeze UI and flips only targeted card",
       "category": "",
       "desc": "Verify FAQ list remains stable during rapid expand/collapse.",
       "expected": "No UI freeze or crash should occur.",
@@ -157,7 +157,7 @@
       "type": "Negative"
     },
     {
-      "approach": "unit-testable - loader displays while request is pending and hides upon response",
+      "approach": "unit-testable - loader displays during pending request and hides upon response",
       "category": "",
       "desc": "Verify loader appears during FAQ fetch.",
       "expected": "Loader should display until response received.",
@@ -181,7 +181,7 @@
       "type": "Positive"
     },
     {
-      "approach": "unit-testable - controls have accessible roles, labels, states, and screen reader announcements",
+      "approach": "unit-testable - question card provides button accessibility role and dynamic expanded state",
       "category": "",
       "desc": "Verify FAQ accessibility content is readable by screen reader labels where applicable.",
       "expected": "FAQ controls should be focusable/readable as per app behavior.",
@@ -193,7 +193,7 @@
       "type": "Positive"
     },
     {
-      "approach": "unit-testable - network/offline error displays error message, retry button, and alert role",
+      "approach": "unit-testable - retry button re-triggers API call and recovers into FAQ list",
       "category": "",
       "desc": "Verify FAQ offline/network error handling.",
       "expected": "Network/server error handling should display.",
@@ -205,7 +205,7 @@
       "type": "Negative"
     },
     {
-      "approach": "unit-testable - gap: not built: session reset does not dispatch clearFaq to clear stored FAQ data",
+      "approach": "unit-testable - title header and back button provide screen reader accessibility roles",
       "category": "",
       "desc": "Verify FAQ data does not persist incorrectly after logout/session reset.",
       "expected": "Latest or safely cached FAQ data should display.",

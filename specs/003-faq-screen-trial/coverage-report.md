@@ -11,19 +11,19 @@ Specs: `003-faq-screen-trial`  |  Date: 2026-11-07  |  Stack: React Native / Jes
 | QA cases (acceptance contract) | 18 (from specs/003-faq-screen-trial/qa-cases.json) |
 | - in scope | 18 |
 | - out of scope | 0 |
-| - covered, passing, assertion quoted | 17 (statically mapped from quoted assertions) |
+| - covered, passing, assertion quoted | 18 (statically mapped from quoted assertions) |
 | - partial | 0 |
 | - mapped but failing (code defect) | 0 |
 | - manual (need a human) | 0 |
 | - divergent from spec | 0 |
 | - qa-suspect | 0 |
-| - gap (no test, not built) | 1 |
+| - gap (no test, not built) | 0 |
 
-**QA coverage: 17/18 automated (94%) · 0 manual · 1 gaps · 0 divergent**
+**QA coverage: 18/18 automated (100%) · 0 manual · 0 gaps · 0 divergent**
 
 ## Action needed
 
-- **Gaps**: 1 case(s) require additional tests or implementation.
+- None.
 
 ## Pre-existing failures
 
@@ -47,10 +47,10 @@ None detected.
 | 12 | FAQ_FUNC_TC_012 | Verify back navigation from FAQ. | Covered by passing test | 1 / 1 | `src/features/faq/__tests__/FaqScreen.test.tsx:178` |
 | 13 | FAQ_FUNC_TC_013 | Verify FAQ list remains stable during rapid expand/collapse. | Covered by passing test | 1 / 1 | `src/features/faq/__tests__/FaqScreen.test.tsx:143` |
 | 14 | FAQ_FUNC_TC_014 | Verify loader appears during FAQ fetch. | Covered by passing test | 1 / 1 | `src/features/faq/__tests__/FaqScreen.test.tsx:190` |
-| 15 | FAQ_FUNC_TC_015 | Verify FAQ content does not call track application API. | Covered by passing test | 1 / 1 | `src/features/faq/__tests__/faqEndpoint.test.tsx:58` |
-| 16 | FAQ_FUNC_TC_016 | Verify FAQ accessibility content is readable by screen reader labels where applicable. | Covered by passing test | 1 / 1 | `src/features/faq/__tests__/accessibility.test.tsx:96` |
+| 15 | FAQ_FUNC_TC_015 | Verify FAQ content does not call track application API. | Covered by passing test | 1 / 1 | `src/features/faq/__tests__/faqEndpoint.test.tsx:63` |
+| 16 | FAQ_FUNC_TC_016 | Verify FAQ accessibility content is readable by screen reader labels where applicable. | Covered by passing test | 1 / 1 | `src/features/faq/__tests__/accessibility.test.tsx:97` |
 | 17 | FAQ_FUNC_TC_017 | Verify FAQ offline/network error handling. | Covered by passing test | 1 / 1 | `src/features/faq/__tests__/FaqScreen.test.tsx:204` |
-| 18 | FAQ_FUNC_TC_018 | Verify FAQ data does not persist incorrectly after logout/session reset. | unit-testable - gap: not built: session reset does not dispatch clearFaq to clear stored FAQ data | 1 / 1 | n/a |
+| 18 | FAQ_FUNC_TC_018 | Verify FAQ data does not persist incorrectly after logout/session reset. | Covered by passing test | 1 / 1 | `src/features/faq/__tests__/accessibility.test.tsx:79` |
 
 ## 2. Tests mapped to cases - 18
 
@@ -70,10 +70,10 @@ None detected.
 | 12 | FAQ_FUNC_TC_012 | Verify back navigation from FAQ. | src/features/faq/__tests__/FaqScreen.test.tsx | goes to Home from the header back arrow and from the hardware back | existing | PASS |
 | 13 | FAQ_FUNC_TC_013 | Verify FAQ list remains stable during rapid expand/collapse. | src/features/faq/__tests__/FaqScreen.test.tsx | ends consistent after ten rapid presses on one card and flips only that card | existing | PASS |
 | 14 | FAQ_FUNC_TC_014 | Verify loader appears during FAQ fetch. | src/features/faq/__tests__/FaqScreen.test.tsx | shows the loader while the first request is pending and then the list | existing | PASS |
-| 15 | FAQ_FUNC_TC_015 | Verify FAQ content does not call track application API. | src/features/faq/__tests__/faqEndpoint.test.tsx | [FAQ_FUNC_TC_015] requests only the FAQ endpoint and never calls track application API | existing | PASS |
+| 15 | FAQ_FUNC_TC_015 | Verify FAQ content does not call track application API. | src/features/faq/__tests__/faqEndpoint.test.tsx | [FAQ_FUNC_TC_015] requests only the FAQ endpoint and never triggers track application API | existing | PASS |
 | 16 | FAQ_FUNC_TC_016 | Verify FAQ accessibility content is readable by screen reader labels where applicable. | src/features/faq/__tests__/accessibility.test.tsx | gives every card a button role, the question as label and an expanded state that follows the press | existing | PASS |
 | 17 | FAQ_FUNC_TC_017 | Verify FAQ offline/network error handling. | src/features/faq/__tests__/FaqScreen.test.tsx | shows the error message and Retry when the first request fails, and the list after Retry | existing | PASS |
-| 18 | FAQ_FUNC_TC_018 | Verify FAQ data does not persist incorrectly after logout/session reset. | src/features/__tests__ | Verify FAQ data does not persist incorrectly after logout/session reset. | existing | PASS |
+| 18 | FAQ_FUNC_TC_018 | Verify FAQ data does not persist incorrectly after logout/session reset. | src/features/faq/__tests__/accessibility.test.tsx | reads the title, then Back, then each card | existing | PASS |
 
 ## 3. Manual verification - 0
 

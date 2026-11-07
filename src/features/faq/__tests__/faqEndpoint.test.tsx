@@ -1,49 +1,33 @@
 import React from 'react';
-import { act, render } from '@testing-library/react-native';
+import { BackHandler } from 'react-native';
+import type { InternalAxiosRequestConfig } from 'axios';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { Provider } from 'react-redux';
-import { post } from '../../../services/httpClient';
+import { apiClient } from '../../../services/httpClient';
 import { createAppStore } from '../../../store';
 import FaqScreen from '../FaqScreen';
 
-jest.mock('../../../services/httpClient', () => ({
-  post: jest.fn(),
-}));
-
-const mockPost = post as jest.Mock;
 type ScreenProps = React.ComponentProps<typeof FaqScreen>;
 
-function setup() {
-  const store = createAppStore();
-  const listeners: Record<string, Array<() => void>> = {};
-  const navigation = {
-    navigate: jest.fn(),
-    addListener: jest.fn((type: string, cb: () => void) => {
-      (listeners[type] = listeners[type] || []).push(cb);
-      return () => {
-        listeners[type] = (listeners[type] || []).filter(l => l !== cb);
-      };
-    }),
-  };
-  const props = { navigation, route: { key: 'faq', name: 'Faq' } } as unknown as ScreenProps;
-  const utils = render(
-    <Provider store={store}>
-      <FaqScreen {...props} />
-    </Provider>,
-  );
-  return {
-    ...utils,
-    store,
-    navigation,
-    emit: (type: string) => act(() => (listeners[type] || []).slice().forEach(cb => cb())),
+const FAQ_URL = 'FormBasedQuery/Services/v1/fetch-faq';
+const original = apiClient.defaults.adapter;
+
+function stubNetwork(urls: string[]) {
+  apiClient.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
+    urls.push(String(config.url));
+    return {
+      data: [{ question: 'What is EMI?', answer: 'Equated monthly instalment' }],
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config,
+    };
   };
 }
 
 beforeEach(() => {
   jest.useFakeTimers();
-  mockPost.mockReset();
-  mockPost.mockResolvedValue([
-    { question: 'What is EMI?', answer: 'Equated monthly instalment' },
-  ]);
+  jest.spyOn(BackHandler, 'addEventListener').mockImplementation(() => ({ remove: () => undefined }));
 });
 
 afterEach(() => {
@@ -51,39 +35,38 @@ afterEach(() => {
     jest.runOnlyPendingTimers();
   });
   jest.useRealTimers();
+  apiClient.defaults.adapter = original;
   jest.restoreAllMocks();
 });
 
-describe('FAQ endpoint isolation (BR-2, P-05)', () => {
-  // Covers: FAQ_FUNC_TC_015 - only FAQ endpoint is requested and track application API is never called
-  it('[FAQ_FUNC_TC_015] requests only the FAQ endpoint and never calls track application API', async () => {
-    const { emit } = setup();
+describe('FAQ screen network use (real FAQ service, stubbed transport)', () => {
+  // Covers: FAQ_FUNC_TC_015 - every HTTP call made by the screen goes to the FAQ endpoint, none to Track Application (FR-019, BR-2, P-05)
+  it('[FAQ_FUNC_TC_015] sends only the fetch-faq request on open and on return, and nothing to Track Application', async () => {
+    const urls: string[] = [];
+    stubNetwork(urls);
+    const listeners: Array<() => void> = [];
+    const navigation = {
+      navigate: jest.fn(),
+      addListener: jest.fn((type: string, cb: () => void) => {
+        if (type === 'focus') {
+          listeners.push(cb);
+        }
+        return () => undefined;
+      }),
+    };
+    const props = { navigation, route: { key: 'faq', name: 'Faq' } } as unknown as ScreenProps;
+    render(
+      <Provider store={createAppStore()}>
+        <FaqScreen {...props} />
+      </Provider>,
+    );
+    await act(async () => undefined);
+    expect(screen.getByText('What is EMI?')).toBeTruthy();
+    fireEvent.press(screen.getByRole('button', { name: 'What is EMI?' }));
+    act(() => listeners.slice().forEach(cb => cb()));
     await act(async () => undefined);
 
-    expect(mockPost).toHaveBeenCalledTimes(1);
-    expect(mockPost).toHaveBeenLastCalledWith(
-      'FormBasedQuery/Services/v1/fetch-faq',
-      {},
-      expect.objectContaining({ baseURL: expect.any(String) }),
-    );
-
-    // Revisit screen
-    emit('focus');
-    await act(async () => undefined);
-
-    expect(mockPost).toHaveBeenCalledTimes(2);
-    expect(mockPost).toHaveBeenLastCalledWith(
-      'FormBasedQuery/Services/v1/fetch-faq',
-      {},
-      expect.objectContaining({ baseURL: expect.any(String) }),
-    );
-
-    // Verify none of the calls were to a track URL
-    const calledUrls = mockPost.mock.calls.map((call: unknown[]) => call[0] as string);
-    expect(calledUrls).toEqual([
-      'FormBasedQuery/Services/v1/fetch-faq',
-      'FormBasedQuery/Services/v1/fetch-faq',
-    ]);
-    expect(calledUrls.some((url: string) => /track/i.test(url))).toBe(false);
+    expect(urls).toEqual([FAQ_URL, FAQ_URL]);
+    expect(urls.some(url => /track/i.test(url))).toBe(false);
   });
 });

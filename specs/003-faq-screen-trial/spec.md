@@ -127,43 +127,6 @@ Back arrow or hardware back opens Home. **Scenarios**: P-06, E-07.
 - **FR-030** Every card MUST be at least 44 high. *Scenarios*: E-04.
 - **FR-031** At text scale up to 2x no text may be clipped or overlap. *Scenarios*: E-05.
 
-### Test-case -> FR traceability
-
-| FR | QA cases |
-|---|---|
-| FR-001 | none |
-| FR-002 | none |
-| FR-003 | none |
-| FR-004 | none |
-| FR-005 | none |
-| FR-006 | none |
-| FR-007 | none |
-| FR-008 | none |
-| FR-009 | none |
-| FR-010 | none |
-| FR-011 | none |
-| FR-012 | none |
-| FR-013 | none |
-| FR-014 | none |
-| FR-015 | none |
-| FR-016 | none |
-| FR-017 | none |
-| FR-018 | none |
-| FR-019 | none |
-| FR-020 | none |
-| FR-021 | none |
-| FR-022 | none |
-| FR-023 | none |
-| FR-024 | none |
-| FR-025 | none |
-| FR-026 | none |
-| FR-027 | none |
-| FR-028 | none |
-| FR-029 | none |
-| FR-030 | none |
-| FR-031 | none |
-
-The authoritative per-case table is `## TC -> Task coverage` in `tasks.md`.
 ## 6. Business Rules
 
 | ID | Rule | Realised by |

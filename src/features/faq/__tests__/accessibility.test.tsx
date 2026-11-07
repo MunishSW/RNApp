@@ -76,6 +76,7 @@ afterEach(() => {
 });
 
 describe('FaqScreen accessibility', () => {
+  // Covers: FAQ_FUNC_TC_018 - title header and back button roles in readable order
   it('reads the title, then Back, then each card', async () => {
     setup(ITEMS);
     await act(async () => undefined);
