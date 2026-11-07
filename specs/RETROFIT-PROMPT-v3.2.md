@@ -56,7 +56,7 @@ Run the fast extractor tool to build specs/<feature>/qa-cases.json:
   node specs/tools/prep-qa.js --qa <QA_CASES> [--qa-sheet <names>] [--qa-scope <filter>] --out specs/<feature>/qa-cases.json
 - Automatically handles: custom column headers, merged cells, step-per-row rows (combining expected results into Step 1..N), missing row IDs (<prefix>-R<row>), duplicate rows (identical desc+expected deduplicated), and clashes (same ID, different desc/expected suffixed with S2, S3...).
 - Guarantees exact 10-key schema required by Check C1: approach, category, desc, expected, id, module, scenario, source, status, type.
-- Do NOT hand-write or transcribe QA JSON in the LLM.
+- FALLBACK: If prep-qa.js fails (or input is .docx / pasted text), write qa-cases.json yourself strictly adhering to the 10 keys above, B.2 step rollup, and B.3 duplicate/clash rules.
 
 STEP C - Prove every in-scope case (Intelligence & Code)
 Read qa-cases.json and the feature test files. For each in-scope case in qa-cases.json order:
@@ -102,6 +102,7 @@ E.0 Run flatten-frs.js:
   - Flattens hierarchical/alphanumeric FR IDs (FR-4.1-01 -> FR-001) across spec folder and test comments.
   - Generates Former id table in spec.md under "### Test-case -> FR traceability".
   - If spec has no FRs, derives them systematically under "## Derived Requirements" with [derived by retrofit - needs review].
+  - FALLBACK: If flatten-frs.js fails, renumber non-flat IDs to FR-001..FR-NNN yourself across spec files and test comments, replace wildcards (FR-4.1-xx -> BRD area 4.1), and add the Former id table in spec.md.
 E.1 spec.md:
   - Ensure every in-scope case maps to an FR (or FR: none (manual)).
 E.2 tasks.md:
@@ -118,6 +119,7 @@ Run the assembler script to build remaining tables and files:
 - Generates manual-verification.json with exact key parity (every manual case and manual remainder).
 - Generates/updates coverage-report.md with Summary, Action needed, Input QA cases, Mapped tests, and Manual verification.
 - Updates ### Test-case -> FR traceability in spec.md.
+- FALLBACK: If assemble-retrofit.js fails, hand-write ## TC -> Task coverage in tasks.md with exact arithmetic in Counts line, create manual-verification.json for manual cases, and write coverage-report.md.
 
 STEP F - Self-Check Verification
 Verify all checks pass via mechanical checker (run manually or verify statically):
