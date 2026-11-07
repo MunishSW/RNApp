@@ -189,6 +189,18 @@ function main() {
     let content = fs.readFileSync(f, 'utf8');
     let changed = false;
 
+    // Handle range and wildcard patterns first (Rule E.0)
+    // E.g. "FR-4.1-xx to FR-4.9-xx" -> "BRD area 4.1 to 4.9"
+    if (/FR-\d+\.\d+-(?:xx|XX)\s+to\s+FR-\d+\.\d+-(?:xx|XX)/.test(content)) {
+      content = content.replace(/FR-(\d+\.\d+)-(?:xx|XX)\s+to\s+FR-(\d+\.\d+)-(?:xx|XX)/g, 'BRD area $1 to $2');
+      changed = true;
+    }
+    // E.g. "FR-4.1-xx" -> "BRD area 4.1"
+    if (/FR-\d+\.\d+-(?:xx|XX)/.test(content)) {
+      content = content.replace(/FR-(\d+\.\d+)-(?:xx|XX)/g, 'BRD area $1');
+      changed = true;
+    }
+
     for (const [oldId, newId] of sortedReplacements) {
       const rx = new RegExp(oldId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'g');
       if (rx.test(content)) {
@@ -197,7 +209,17 @@ function main() {
       }
     }
 
+    // Catch any remaining non-flat wildcards like bare FR-4.1
+    if (f !== specMdPath) {
+      if (/FR-\d+\.\d+/.test(content)) {
+        content = content.replace(/FR-(\d+\.\d+)/g, 'BRD area $1');
+        changed = true;
+      }
+    }
+
     if (f === specMdPath) {
+      // Catch remaining non-flat wildcards in specMd outside former table
+      content = content.replace(/FR-(\d+\.\d+)(?!\s*\|)/g, 'BRD area $1');
       // Insert or replace Former id table
       if (content.includes('### Test-case -> FR traceability')) {
         content = content.replace(/### Test-case -> FR traceability[\s\S]*?(?=\n#{2,3}\s|\n\s*$)/, formerTableStr.trim());
