@@ -14,6 +14,11 @@ export const palette = {
   dialogText: '#212121',
   dialogAction: '#035795',
   dialogDivider: '#E0E0E0',
+  faqPageBackground: '#E3ECF5',
+  faqChevron: '#FF5101',
+  faqCardBackground: '#FFFFFF',
+  faqText: '#000000',
+  faqLink: '#035795',
 } as const;
 
 export interface ThemeTokens {
@@ -25,6 +30,13 @@ export interface ThemeTokens {
   dialogText: string;
   dialogAction: string;
   dialogDivider: string;
+  faqPageBackground: string;
+  faqChevron: string;
+  faqCardBackground: string;
+  faqText: string;
+  faqLink: string;
+  faqActionBar: string;
+  faqActionBarText: string;
 }
 
 const light: ThemeTokens = {
@@ -36,6 +48,13 @@ const light: ThemeTokens = {
   dialogText: palette.dialogText,
   dialogAction: palette.dialogAction,
   dialogDivider: palette.dialogDivider,
+  faqPageBackground: palette.faqPageBackground,
+  faqChevron: palette.faqChevron,
+  faqCardBackground: palette.faqCardBackground,
+  faqText: palette.faqText,
+  faqLink: palette.faqLink,
+  faqActionBar: palette.brandBlue,
+  faqActionBarText: palette.white,
 };
 
 export const themes: Record<'light' | 'dark' | 'highContrast', ThemeTokens> = {
@@ -90,4 +109,29 @@ export const ctaGradient = {
     { offset: 0.055578, color: palette.ctaStart },
     { offset: 0.94442, color: palette.ctaEnd },
   ],
+} as const;
+
+/** Figma numbers for the FAQ screen (node 2:2068, 360 x 778 reference frame). */
+export const faqLayout = {
+  columnMaxWidth: 360,
+  actionBarHeight: 48,
+  backArrowLeft: 18,
+  backArrowWidth: 21,
+  backArrowHeight: 18,
+  titleGap: 11,
+  titleFontSize: 14,
+  listTop: 12,
+  listSide: 18,
+  cardGap: 8,
+  cardRadius: 4,
+  cardPadding: 12,
+  chevronSize: 20,
+  chevronGap: 7,
+  questionFontSize: 12,
+  questionLineHeight: 18,
+  answerGap: 8,
+  answerBlockGap: 4,
+  listMarkerWidth: 18,
+  minTouchTarget: 44,
+  chevronAnimationMs: 150,
 } as const;

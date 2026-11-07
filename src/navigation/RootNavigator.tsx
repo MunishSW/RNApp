@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import FaqScreen from '../features/faq/FaqScreen';
 import NonLoggedHomeScreen from '../features/nonLoggedHome/NonLoggedHomeScreen';
 import NonLoggedInHomeScreen from '../features/nonLoggedInHome/NonLoggedInHomeScreen';
 import PayNowScreen from '../features/nonLoggedInHome/PayNowScreen';
@@ -22,7 +23,7 @@ export default function RootNavigator() {
         <Stack.Screen name={ROUTES.LoginScreen} component={StubScreen} />
         <Stack.Screen name={ROUTES.Products} component={StubScreen} />
         <Stack.Screen name={ROUTES.Offers} component={StubScreen} />
-        <Stack.Screen name={ROUTES.Faq} component={StubScreen} />
+        <Stack.Screen name={ROUTES.Faq} component={FaqScreen} />
         <Stack.Screen name={ROUTES.TrackApplication} component={StubScreen} />
         <Stack.Screen name={ROUTES.BranchLocator} component={StubScreen} />
         <Stack.Screen

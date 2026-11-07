@@ -27,19 +27,20 @@ GROUND RULES
    code and do NOT write a test that contradicts the code. Mark the case DIVERGENT and report it.
 3. Never invent a case id, an expected result, or a mapping. If you cannot prove a link, mark it
    UNVERIFIED.
-4. Never change production code. You may add tests, and edit existing tests only for markers and
+4. Never change production code. The only exception is comment-only edits that replace an old FR id
+   with its new FR-NNN id (Step E.0). You may add tests, and edit existing tests only for markers and
    titles (Step C.4). Never weaken, delete or rewrite an existing assertion.
 5. Do not add Red/Green/Refactor tasks, "Tags:" lines or "TESTS:" lines.
 6. If this prompt is run on a folder that is already converted, update each section in place. Never
    append a second copy of any section, table row, task or phase.
-9. Do the work yourself in this session. Do not start workflows, background jobs or sub-agents unless
-   the user asks for them.
-8. Work only from SPEC_FOLDER, QA_CASES, BRD and the source code. Never read, copy or reuse anything
-   from any other folder under specs/, even if it looks identical to this one. Rebuild
-   qa-cases.json from the QA source on every run, never from an existing JSON file.
 7. The one allowed id change: FR ids are renamed to the flat form FR-NNN (Step E.0). Reason: review
    tools read an id like "FR-4.1-01" as "FR-4" and then cannot tell requirements apart. No other
    id (BR, TV, PERF, P-/N-/E- scenarios, T### tasks, QA ids) is renamed.
+8. Work only from SPEC_FOLDER, QA_CASES, BRD and the source code. Never read, copy or reuse anything
+   from any other folder under specs/, even if it looks identical to this one. Rebuild
+   qa-cases.json from the QA source on every run, never from an existing JSON file.
+9. Do the work yourself in this session. Do not start workflows, background jobs or sub-agents unless
+   the user asks for them.
 
 STEP A - Inventory (read only), then ask once
 Start check: if the feature's test files already carry "Covers:" markers with QA ids from QA_CASES,
@@ -122,7 +123,9 @@ For each case, in qa-cases.json order:
    - If a test title uses "[TC-xxx]", change that to "[<QA-ID>]". Legacy ids that map to a QA case are
      replaced. Legacy ids with NO matching QA case are ORPHANS: report them, do not put them in
      qa-cases.json.
-   - Edit only these comments and titles in existing tests.
+   - Edit only these comments and titles in existing tests. Titles are changed only where they
+     carry a "[TC-xxx]" tag; leave every other title as it is. Markers are the only addition for the
+     rest.
 5. Write each case's "approach" in qa-cases.json: a leading verdict plus the reason. The verdict word
    MUST match the class from step 3:
      COVERED / PARTIAL-testable part  "unit-testable - <what the test asserts>"
@@ -164,8 +167,10 @@ STEP E - Add the missing files and re-shape the existing ones
      everywhere.
    - Replace the old id with the new id in EVERY file in the spec folder (spec.md, plan.md, tasks.md,
      checklists, contracts, research, data-model, quickstart, release notes, traceability), and in
-     comment text of the feature's test files (notes after the " - " in "// Covers:" lines and other
-     comments only; never code). Replace longest ids first so one id is never half-replaced.
+     comment text of the feature's test files and of the feature's production source files (notes after
+     the " - " in "// Covers:" lines and other comments only; never code, never strings the code uses).
+     Replace longest ids first so one id is never half-replaced. In production files only comment
+     lines may change; prove it with the diff in Step F.
    - Wildcard and range references that name no single requirement (for example "FR-4.1-xx",
      "FR-4.1 to FR-4.9", a bare "FR-7.4" or "FR-4" meaning a BRD section) are rewritten as the BRD area
      in words ("BRD area 4.1", "BRD 7.4") or as an explicit range of new ids ("FR-001 to FR-009").
@@ -203,8 +208,8 @@ STEP E - Add the missing files and re-shape the existing ones
      maps to the FR(s) whose files or behaviour it checks or guards: the FRs of the task(s) it
      depends on or verifies. A task covering the whole feature maps to the FRs of its phase. A task
      with only one of the two fields, or with no FR-NNN in Maps, is incomplete.
-   - Add near the top if absent: "**Input**: specs/<feature>/ (spec.md, plan.md, qa-cases.json,
-     manual-verification.json)", and an Environment Gate with
+   - Add near the top if absent: "**Input**: specs/<feature>/ (spec.md, plan.md, qa-cases.json" plus
+     ", manual-verification.json" only when that file exists, then ")", and an Environment Gate with
      "- [ ] T-ENV-001: Run <the project's real test command> - existing suite green."
      Do not add any statement about when tests are written; keep the folder's own structure.
    - New tests from Step D go in a final phase "Retrofit Tests", continuing the T### numbers, each
@@ -246,7 +251,8 @@ STEP F - Self-check (print results; fix failures; then continue)
 - Every case in qa-cases.json appears exactly once in the TC -> Task table with a real task id.
 - Counts line parts add up to the total and match the table and spec.md.
 - Every FR has at least one case, or "none" with the standard note.
-- FR ids are flat: grep the whole spec folder and the feature's test files for "FR-[0-9]+\.[0-9]" and
+- FR ids are flat: grep the whole spec folder, the feature's test files and the feature's production
+  source files for "FR-[0-9]+\.[0-9]" and
   for any bare "FR-[0-9]" that is not a 3-digit FR-NNN; there must be no match. Every FR-NNN used in
   tasks.md, plan.md or the traceability tables is defined in spec.md, and every row of the former-id
   table maps to exactly one FR-NNN.
@@ -266,16 +272,20 @@ STEP F - Self-check (print results; fix failures; then continue)
   (plain hyphen, ids only in the id list). Grep for "Covers:" lines that use another separator and for
   any other marker keyword (e.g. "Supports:"); there must be none.
 - No orphan ids: every id in a "// Covers:" marker or "[...]" title exists in qa-cases.json.
-- Every COVERED case has a quoted assertion line; every unit-testable case has at least one test
-  carrying its id.
+- Every COVERED case has a quoted assertion line; every unit-testable case that is not DIVERGENT,
+  QA-SUSPECT or OUT-OF-SCOPE has at least one test carrying its id. (DIVERGENT cases get no new test;
+  if an existing test already asserts the behaviour the spec records, it may carry the id with a note
+  saying the case is divergent and is not claimed as covered.)
 - manual-verification.json keys = every case whose approach starts "manual" + every PARTIAL case whose
   approach says "manual remainder"; nothing else. Check both directions by listing the keys next to
   the approach column.
 - Class and approach agree for all cases: count approaches that start "manual", "out-of-scope" and
   "unit-testable"; the manual and out-of-scope counts equal the Counts line.
 - qa-cases.json cases have exactly the schema fields and no others.
-- No production file changed; existing test files changed only in markers/titles plus added tests
-  (show `git diff --stat` and `git diff` for existing test files, markers/titles only).
+- No production file changed except comment lines that replace an old FR id; existing test files
+  changed only in markers/titles plus added tests (show `git diff --stat`, and `git diff` limited to
+  the feature's files: every changed production line must be a comment, every changed test line a
+  marker, a [TC-xxx] title tag, a comment, or part of an added test).
 
 STEP G - Run and write the coverage report
 Run only the test files from Step A plus any you created, with the project's runner, e.g.
