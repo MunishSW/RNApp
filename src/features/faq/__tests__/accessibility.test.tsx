@@ -76,7 +76,6 @@ afterEach(() => {
 });
 
 describe('FaqScreen accessibility', () => {
-  // Covers: FAQ_FUNC_TC_016 - title, Back and each card are buttons or headings with labels in reading order (FR-028, FR-029, E-04)
   it('reads the title, then Back, then each card', async () => {
     setup(ITEMS);
     await act(async () => undefined);
@@ -94,7 +93,6 @@ describe('FaqScreen accessibility', () => {
     expect(screen.getByRole('header').props.children).toBe('FAQs');
   });
 
-  // Covers: FAQ_FUNC_TC_016 - every card is a button labelled with the question and exposes expanded state (FR-028, E-04)
   it('gives every card a button role, the question as label and an expanded state that follows the press', async () => {
     setup(ITEMS);
     await act(async () => undefined);

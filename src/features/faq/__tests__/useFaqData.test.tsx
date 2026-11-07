@@ -105,7 +105,6 @@ describe('useFaqData', () => {
     expect(store.getState().faq.items).toEqual([A]);
   });
 
-  // Covers: FAQ_FUNC_TC_005 - empty array gives the empty state (FR-022, N-05)
   it('gives the empty state for an empty array when nothing is stored', async () => {
     mockFetch.mockResolvedValue([]);
     const { result } = setup();
@@ -113,7 +112,6 @@ describe('useFaqData', () => {
     expect(result.current.state).toBe('empty');
   });
 
-  // Covers: FAQ_FUNC_TC_011 - non-array answer gives the empty state and no items (FR-020, N-06)
   it('gives the empty state for a non-array answer when nothing is stored', async () => {
     mockFetch.mockResolvedValue({ unexpected: true });
     const { result } = setup();
@@ -203,7 +201,6 @@ describe('useFaqData', () => {
     expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 
-  // Covers: FAQ_FUNC_TC_018 - after the stored list is cleared the next open loads a new list (FR-021, N-07); the logout trigger is not in this repo
   it('loads a new list on the next open after the stored list was cleared', async () => {
     mockFetch.mockResolvedValueOnce([A]);
     const { result, store, focus } = setup([A]);

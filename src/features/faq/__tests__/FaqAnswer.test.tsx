@@ -13,7 +13,6 @@ afterEach(() => {
 });
 
 describe('FaqAnswer', () => {
-  // Covers: FAQ_FUNC_TC_004 - bold, italic and underline styles are applied to the HTML runs (FR-012, P-04)
   it('renders bold and italic runs with the matching font styles', () => {
     render(<FaqAnswer html="Plain <b>bold</b> <i>italic</i> <u>under</u>" />);
     const bold = StyleSheet.flatten(screen.getByText('bold').props.style);
@@ -24,7 +23,6 @@ describe('FaqAnswer', () => {
     expect(under.textDecorationLine).toBe('underline');
   });
 
-  // Covers: FAQ_FUNC_TC_004 - bullet and number markers are drawn for lists (FR-012, P-04)
   it('renders bullet and number markers for lists', () => {
     render(<FaqAnswer html="<ul><li>one</li></ul><ol><li>first</li><li>second</li></ol>" />);
     expect(screen.getByText('•')).toBeTruthy();
@@ -63,7 +61,6 @@ describe('FaqAnswer', () => {
     expect(() => fireEvent.press(screen.getByText('help'))).not.toThrow();
   });
 
-  // Covers: FAQ_FUNC_TC_010 - long answer shows in full with no height or line limit (FR-014, E-02)
   it('shows a long answer in full with no height or line limit', () => {
     const long = 'word '.repeat(400).trim();
     render(<FaqAnswer html={long} />);

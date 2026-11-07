@@ -32,7 +32,6 @@ describe('FaqStateView', () => {
     expect(screen.queryByText(ERROR)).toBeNull();
   });
 
-  // Covers: FAQ_FUNC_TC_007, FAQ_FUNC_TC_017 - error variant shows the exact message and one Retry button inside the page (FR-024, N-02, E-06)
   it('shows the exact error message and one Retry button that calls the handler', () => {
     const onRetry = jest.fn();
     render(<FaqStateView variant="error" onRetry={onRetry} />);

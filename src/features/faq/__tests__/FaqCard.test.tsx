@@ -35,7 +35,6 @@ afterEach(() => {
 });
 
 describe('FaqCard', () => {
-  // Covers: FAQ_FUNC_TC_009 - question has no line limit, no ellipsis and no fixed height (FR-007, E-01)
   it('shows the full question with no line limit', () => {
     render(<Harness question={LONG_QUESTION} answer="x" />);
     const text = screen.getByText(LONG_QUESTION);
@@ -70,7 +69,6 @@ describe('FaqCard', () => {
     expect(open.props.accessibilityValue).toEqual({ text: 'Expanded' });
   });
 
-  // Covers: FAQ_FUNC_TC_002, FAQ_FUNC_TC_003 - answer appears on open and is removed on the second press (FR-008, P-02, P-03)
   it('shows the answer area only while open', () => {
     render(<Harness question="Q" answer="Monthly instalment" />);
     expect(screen.queryByTestId('faq-answer')).toBeNull();

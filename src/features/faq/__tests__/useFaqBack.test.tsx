@@ -45,7 +45,6 @@ afterEach(() => {
 });
 
 describe('useFaqBack', () => {
-  // Covers: FAQ_FUNC_TC_012 - back opens the NonLoggedInHome route explicitly (FR-026, P-06)
   it('opens the Home route explicitly from the header back', () => {
     const { result, navigation } = setup();
     act(() => result.current.onBack());
