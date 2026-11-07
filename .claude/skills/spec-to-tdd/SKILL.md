@@ -6,7 +6,7 @@ description: >-
   new unit tests for testable gaps, renumbers FR IDs to flat FR-NNN, and generates traceability tables,
   manual verification checklists, and coverage reports. Supports React Native (Jest), Flutter, Angular,
   Android, and iOS. Triggers: "spec-to-tdd", "retrofit spec", "convert spec to tdd", "map QA to spec".
-version: 3.2.0
+version: 3.2.2
 ---
 
 # spec-to-tdd
@@ -17,7 +17,8 @@ The feature is already built. This skill:
 2. Maps every in-scope QA case to proof in existing tests (quoted assertion lines).
 3. Writes new unit tests only where no test proves a testable case.
 4. Flattens requirement IDs to `FR-NNN` and assembles traceability, manual verification checklists, and coverage reports deterministically.
-5. Produces a scoped terminal execution block targeting ONLY affected test files (runs in ~1-2s).
+5. Verifies all 19 mechanical rules via `check-retrofit.js` (< 0.1s).
+6. Produces a scoped terminal execution block targeting ONLY affected test files (runs in ~1-2s).
 
 Does NOT change production code. Supports React Native (Jest), Flutter, Angular, Android, and iOS; only the test layer differs.
 
@@ -29,6 +30,7 @@ Does NOT change production code. Supports React Native (Jest), Flutter, Angular,
 - **`QA_CASES`** (required, acceptance contract): Path to `.xlsx`, `.xlsm`, `.csv`, `.json`, `.docx`, `.md`, `.txt`, or pasted text; sheet(s): `<names or "all">`
 - **`QA_SCOPE`** (optional): User-confirmed scope (module names, ID list, or keywords; otherwise Step A.4 decides)
 - **`BRD`** (optional): Path to BRD or `N/A`
+- **`CONTINUE_IN_PLACE`** (optional, boolean, default `false`): Set to `true` (or pass `RERUN_MODE: continue`) to bypass Step A.3 STOP AND ASK when updating an already retrofitted spec.
 
 Infer the rest (stack, runner, test files, commands). No story ID, Jira ID, Figma link, or constitution needed. Create no `stories.json`, ledger, or "Stories" table.
 
@@ -38,7 +40,7 @@ Infer the rest (stack, runner, test files, commands). No story ID, Jira ID, Figm
 
 ## High-Speed Deterministic Pipeline (Tools + LLM Intelligence)
 
-This skill pairs lightweight deterministic Node scripts located in `<skill-dir>/tools/` for mechanical tasks with LLM reasoning for test analysis:
+This skill pairs lightweight deterministic Node scripts located in `<skill-dir>/tools/` (e.g. `.claude/skills/spec-to-tdd/tools` or `.agents/skills/spec-to-tdd/tools`) for mechanical tasks with LLM reasoning for test analysis:
 
 ```
 [QA Source] ---> prep-qa.js (0 tokens, <0.2s) ---> qa-cases.json (100% schema compliance)
@@ -47,17 +49,22 @@ This skill pairs lightweight deterministic Node scripts located in `<skill-dir>/
 [Test Files] <--- LLM Intelligence (Step C & D) <-----------+
   * Quotes real assertion lines (expect(...))
   * Authors new tests for GAPs with // Covers: markers
-  * Emits explicit verdicts.json with approach & tasks
                                 |
                                 v
 [Spec Files] ---> flatten-frs.js (0 tokens, <50ms) ---> Flat FR-001..FR-NNN across all files
-                                                               |
-                                                               v
+                                |
+                                v
+[Tasks.md] <---- Structure Tasks (Step E.2) -------> Finalize verdicts.json with Task IDs
+                                                            |
+                                                            v
 [Spec & Tasks] <--- assemble-retrofit.js (0 tokens, <0.3s) <--+
   * Generates ## TC -> Task coverage table
   * Mathematical guarantee on Counts: line arithmetic
   * Generates manual-verification.json with 1:1 key parity
   * Generates coverage-report.md and spec.md traceability
+                                |
+                                v
+[Self-Check] <---- check-retrofit.js (0 tokens, <0.1s) -------> Exits 0 on all 19 checks
 ```
 
 `<skill-dir>` refers to the directory containing this `SKILL.md`.
@@ -83,7 +90,7 @@ This skill pairs lightweight deterministic Node scripts located in `<skill-dir>/
 9. **Do the work yourself**: No workflows, background jobs, or sub-agents unless the user asks.
 10. **STOP AND ASK Protocol**: Write nothing, print the question with evidence (tables, counts, A.1 stack, A.2 test-file list), and end the run. If you cannot ask, the run ends. Never continue on a guess.
 11. **SPEC-DRIFT**: Spec-vs-code drift is only reported: `SPEC-DRIFT FR-NNN` with `file:line`, plus an Open-item task. Never fix code or test unbuilt behaviour.
-12. **DO NOT run test runners or checker inside the prompt**: Never run `npx jest`, `flutter test`, `ng test`, `gradlew`, or `xcodebuild` foreground or background. Proof is established by static code analysis (quoting real assertion lines). Step H prints the commands for terminal execution.
+12. **DO NOT run application test runners inside the prompt**: Never run `npx jest`, `flutter test`, `ng test`, `gradlew`, or `xcodebuild` foreground or background. Proof is established by static code analysis (quoting real assertion lines). (Note: Running the lightweight static script `node <skill-dir>/tools/check-retrofit.js` in Step G is permitted and required as it only checks file text without running code).
 13. **TARGET ONLY AFFECTED TEST FILES**: The test command output in Step H must list ONLY the test files affected by that spec (new tests authored and existing test files modified), NEVER the entire test suite or unrelated directories.
 
 ---
@@ -104,8 +111,8 @@ This skill pairs lightweight deterministic Node scripts located in `<skill-dir>/
    - If none exist, search test dirs for feature source names, screen names, `Covers:` markers, or bracket tags.
    - A shared test file outside the feature folder already carrying `Covers:` markers for another spec's QA IDs is "shared, owned by another spec": not proof, not edited (except FR ID renames in comments).
    - Print final test list and stack/command. List: requirement IDs, scenarios, tasks, markers, bracket tags, spec TC tables, manual-check docs.
-3. **A.3 Start Check (Strict STOP AND ASK)**:
-   Stop and ask whether to continue in place or stop when ANY of the following 3 triggers are true:
+3. **A.3 Start Check (STOP AND ASK)**:
+   Unless `CONTINUE_IN_PLACE: true` is provided (e.g. updating an already converted spec in place), stop and ask whether to continue in place or stop when ANY of the following 3 triggers are true:
    - (a) Feature's own test files already carry `Covers:` markers with QA IDs from `QA_CASES`
    - (b) `SPEC_FOLDER` holds `qa-cases.json` or `coverage-report.md`
    - (c) `tasks.md` has `## TC -> Task coverage` (ASCII arrow) or an older table whose first column holds QA IDs from `QA_CASES`.
@@ -113,8 +120,10 @@ This skill pairs lightweight deterministic Node scripts located in `<skill-dir>/
 4. **A.4 Relevance Gate (Before Writing)**:
    - If `QA_SCOPE` is given, apply it first.
    - Compare module and scenario names with spec title, summary, behaviours, and source files. A case is IN SCOPE when some step's expected result is produced by files named in the spec or feature folder.
+   - Decide whether child components count; compute in-scope count **with and without borderline cases**.
    - Print table: module (or scenario/id range), cases count, in-scope count, one-line reason.
-   - If `< 20%` in scope: **STOP AND ASK** for the right sheet or a `QA_SCOPE` filter, displaying candidate sheets.
+   - If `< 20%` in scope (either count): **STOP AND ASK** for the right sheet or a `QA_SCOPE` filter, displaying candidate sheets.
+   - If `> 25%` out of scope but `>= 20%` in scope: record note to print in Step H, continue.
    - If `> 50%` out-of-scope and no `QA_SCOPE` given: first line of Step H report and `coverage-report.md` must be:
      `SUSPECT INPUT: <n>% of the QA cases are out of scope`
    - If user confirmed sheet or gave `QA_SCOPE` with out-of-scope cases: first line must be:
@@ -140,6 +149,7 @@ node <skill-dir>/tools/prep-qa.js --qa <QA_CASES> [--qa-sheet <names>] [--qa-sco
 - Handles: custom headers, merged cells, step-per-row rows (`Step 1: ...` and status rollup), missing row IDs (`<sheet code>-R<row>`), duplicate rows (identical desc+expected deduplicated), and clashes (same ID with different desc/expected suffixed `S2`, `S3...`).
 - Cases with the same ID on several sheets are qualified as `<sheet> / <id>`.
 - Guarantees exact 10 keys required by Check C1: `approach, category, desc, expected, id, module, scenario, source, status, type`.
+- Track metrics for Step H: `step rows R -> cases C`, duplicates ignored, IDs suffixed/qualified, generated IDs.
 - **FALLBACK**: If `prep-qa.js` fails or input is `.docx` / pasted text, write `qa-cases.json` manually adhering strictly to the 10 keys above, Step B.2 step rollup, and Step B.3 duplicate/clash rules.
 
 ---
@@ -154,7 +164,7 @@ Read `<SPEC_FOLDER>/qa-cases.json` and the feature test files. For each in-scope
    - *Vague expected*: mark `PARTIAL` unless assertion checks a concrete observable.
    - *Title carrying QA ID but testing something else*: `MISLABELLED` (proves nothing).
 3. **Classify (Statically Mapped)**:
-   - `COVERED`: every part of expected asserted by a quoted line in a test that can pass (statically mapped, not run).
+   - `COVERED`: every part of expected asserted by a quoted line in an existing test that can pass (statically mapped, not run).
    - `PARTIAL`: some parts asserted (quote assertion and state missing part).
    - `GAP`: no test exists, or behaviour not built.
    - `MANUAL`: device, screen reader, real network, hardware, gesture feel, biometric, permissions, native-only.
@@ -166,7 +176,9 @@ Read `<SPEC_FOLDER>/qa-cases.json` and the feature test files. For each in-scope
    ```typescript
    // Covers: <QA-ID>[, <QA-ID>] - <short note>
    ```
-   Plain hyphen with space on each side. Add title tag `[<QA-ID>]` only on tests you author where the language permits.
+   - **CRITICAL FORMAT RULE (Check K1)**: Exact syntax required: `// Covers: <QA-ID>[, <QA-ID>] - <note>` with a single space after `Covers:`, a hyphen with one space on each side (` - `), and a non-empty note.
+   - **BANNED KEYWORDS (Check K1)**: NEVER write `// Supports:`, `// Verifies:`, or `// Related:`. Only `// Covers:` is permitted.
+   - Add title tag `[<QA-ID>]` only on tests you author where the language permits.
    - If an existing test had a legacy bracket tag (e.g. `[TC-001]`), rewrite to the matching QA ID only on a proven match.
    - If an existing test had an unproven `Covers:` marker, convert to a plain comment keeping its note.
 5. **Assign Approach Format**:
@@ -179,26 +191,8 @@ Read `<SPEC_FOLDER>/qa-cases.json` and the feature test files. For each in-scope
    - `DIVERGENT`: `unit-testable - divergent: <reason>`
    - `QA-SUSPECT`: `unit-testable - qa-suspect: <reason>`
    - `OUT-OF-SCOPE`: `out-of-scope - <reason>`
-6. **Emit `verdicts.json`**:
-   Write `<SPEC_FOLDER>/verdicts.json`. To prevent heuristic fallback in Step F, you MUST specify explicit task IDs in `tasks`:
-
-   ```json
-   {
-     "FAQ_FUNC_TC_001": {
-       "approach": "unit-testable - asserts question expands on click",
-       "tasks": ["T034"]
-     },
-     "FAQ_FUNC_TC_008": {
-       "approach": "manual - TalkBack screen reader announcement verification",
-       "tasks": ["T035"]
-     },
-     "BILLING_TC_001": {
-       "approach": "out-of-scope - billing module owned by spec 004",
-       "tasks": ["n/a"]
-     }
-   }
-   ```
-   *(Array format `[{"id": "...", "approach": "...", "tasks": ["..."]}]` is also supported).*
+6. **Approach Staging**:
+   Keep track of each case's classification and approach string. Do not write `verdicts.json` yet; it will be finalized with exact task IDs in Step E.2 after tasks are authored.
 
 ---
 
@@ -207,8 +201,8 @@ Read `<SPEC_FOLDER>/qa-cases.json` and the feature test files. For each in-scope
 - Author tests ONLY for unit-testable `GAP` and `PARTIAL` cases where the behaviour is built.
 - Minimum one test per case. Assert the expected result precisely (strings, counts, navigation, states).
 - Mock only external boundaries (network, native modules, storage). Never mock the unit under test.
-- Title `[<QA-ID>] <behaviour>` with `// Covers: <QA-ID> - <note>` marker above.
-- Record all affected test files (created or modified) for Step H.
+- Title `[<QA-ID>] <behaviour>` with `// Covers: <QA-ID> - <note>` marker directly above.
+- Record all affected test files (created or modified) as a comma-separated list without spaces (`--tests <file1>,<file2>`) for Step E, F, G, and H.
 
 ---
 
@@ -225,6 +219,7 @@ node <skill-dir>/tools/flatten-frs.js --spec <SPEC_FOLDER> [--tests <affected-te
 - Handles wildcard and range references (`FR-4.1-xx to FR-4.9-xx` -> `BRD area 4.1 to 4.9`).
 - Generates Former ID table under `### Test-case -> FR traceability` in `spec.md`.
 - If the spec has no FR IDs, systematically derives them under `## Derived Requirements` with `[derived by retrofit - needs review]`.
+- **CRITICAL RULE (Check I1)**: No dotted or lettered FR IDs (`FR-4.1-01` or `FR-A`) may remain in ANY `.md` file in `SPEC_FOLDER`, except on lines containing `Former id`.
 - **FALLBACK**: If `flatten-frs.js` fails, perform the renumbering, wildcard replacement, and Former ID table insertion manually.
 
 #### E.1 Update `spec.md`
@@ -233,7 +228,7 @@ node <skill-dir>/tools/flatten-frs.js --spec <SPEC_FOLDER> [--tests <affected-te
 - Add `### Test-case -> FR traceability` before "Key Entities" (or right after Functional Requirements) with `| FR | QA cases |`.
 - Update any success criteria counting tests with real numbers. Keep the spec's own TC table, labelled `spec-derived TCs (not QA ids)`.
 
-#### E.2 Update `tasks.md`
+#### E.2 Update `tasks.md` & Finalize `verdicts.json`
 - Keep all existing tasks and checkbox states intact.
 - Near the top, add/extend the specification file list and Environment Gate:
   ```markdown
@@ -244,15 +239,36 @@ node <skill-dir>/tools/flatten-frs.js --spec <SPEC_FOLDER> [--tests <affected-te
   ```markdown
   **Maps**: FR-NNN · **Accept**: <plain-language done condition>
   ```
-  - `Maps` holds explicit `FR-NNN` (no ranges, never "none").
-  - If reformatting an existing task with another layout or range, preserve the original text as `(was: ...)` (e.g. `**Maps**: FR-001, FR-002 (was: FR-1.1 to FR-1.2) · **Accept**: ...`).
+  - **CRITICAL RULE (Check T7 & T8)**: `**Maps**:` must contain explicit comma-separated `FR-NNN` (e.g. `FR-001, FR-002`). It must NEVER contain ranges like `FR-001 - FR-005` or the word `none`. If reformatting an existing task with another layout or range, preserve the original text as `(was: ...)` (e.g. `**Maps**: FR-001, FR-002 (was: FR-1.1 to FR-1.2) · **Accept**: ...`).
+  - **CRITICAL RULE (Check T9)**: Every FR defined in `spec.md` MUST appear in the `**Maps**:` of at least one task in `tasks.md`.
 - Tasks for new Step D tests: add under phase `## Retrofit Tests` with `- [ ]` (unticked by default; will be ticked green after user runs the test command in Step H).
 - Unchecked tasks under `## Retrofit Gaps` with `- [ ]` for: unbuilt GAP cases, blocked remainders, needs seam, environment fixes, and `SPEC-DRIFT` items.
-- For an unbuilt FR with no task, add unchecked task:
+- For an unbuilt FR with no task, add an unchecked Open-item task with explicit Maps and Accept:
   ```markdown
-  - [ ] T###: Open item <FR-NNN>: <desc>; not built, awaiting owner decision (<open item id> if any)
+  - [ ] T###: Open item <FR-NNN>: <requirement summary>; not built, awaiting owner decision (<open item id> if any)
+        **Maps**: FR-NNN · **Accept**: Awaiting owner decision / built in future milestone.
   ```
 - An existing "TC -> Task coverage" table of another shape: retitle to `Legacy test-approach rows`.
+- **Finalize `<SPEC_FOLDER>/verdicts.json`**:
+  Now that all task IDs (existing build tasks and new `## Retrofit Tests` tasks) are known, write `<SPEC_FOLDER>/verdicts.json`. To prevent heuristic fallback in Step F, you MUST specify explicit task IDs in `tasks`:
+
+  ```json
+  {
+    "FAQ_FUNC_TC_001": {
+      "approach": "unit-testable - asserts question expands on click",
+      "tasks": ["T034"]
+    },
+    "FAQ_FUNC_TC_008": {
+      "approach": "manual - TalkBack screen reader announcement verification",
+      "tasks": ["T035"]
+    },
+    "BILLING_TC_001": {
+      "approach": "out-of-scope - billing module owned by spec 004",
+      "tasks": ["n/a"]
+    }
+  }
+  ```
+  *(Note for Check T6: For all `out-of-scope` cases, `tasks` MUST be `["n/a"]`).*
 
 #### E.3 Update `plan.md`
 - If `plan.md` is absent, create it.
@@ -279,20 +295,36 @@ node <skill-dir>/tools/assemble-retrofit.js --spec <SPEC_FOLDER> [--tests <affec
 - Generates `manual-verification.json` with exact 1:1 key parity for every manual case and manual remainder.
 - Generates / updates `coverage-report.md` with Summary, Action Needed, Input QA cases, and Mapped tests (prefixed with `SUSPECT INPUT:` or `CONFIRMED SCOPE:` if triggered in Step A.4).
 - Updates `### Test-case -> FR traceability` in `spec.md`.
-- **FALLBACK**: If `assemble-retrofit.js` fails, hand-write the table, `manual-verification.json`, and `coverage-report.md` manually with strict arithmetic reconciliation.
+- **FALLBACK**: If `assemble-retrofit.js` fails:
+  - Hand-write `## TC -> Task coverage` in `tasks.md` ensuring the `Counts:` line matches exactly and out-of-scope rows read `| n/a |` (Check T6).
+  - Create `manual-verification.json` ONLY if manual cases or manual remainders exist. If 0 manual cases, do NOT create it (Check M1).
+  - Write `coverage-report.md` containing these EXACT 5 headings (Check R1):
+    1. `## Summary`
+    2. `## Action needed`
+    3. `## 1. Input QA cases`
+    4. `## 2. Tests mapped to cases`
+    5. `## 3. Manual verification`
 
 ---
 
-### STEP G — Self-Check Verification
+### STEP G — Mechanical Self-Check Verification (`check-retrofit.js`)
 
-Statically verify that all mechanical checks pass before presenting the final reply:
-- `C1, C2, C3`: `qa-cases.json` schema (exact 10 keys), unique IDs, valid approach words (`unit-testable`, `manual`, `out-of-scope`).
-- `T1..T9`: `## TC -> Task coverage` table format, Counts line arithmetic, `**Maps**:` and `**Accept**:`, every defined FR mapped in tasks.
-- `I1`: Zero dotted or lettered FR IDs (`FR-4.1-01`) remain in the spec folder.
+Execute the mechanical verification script inside the agent turn (it is a lightweight static checker, taking < 0.1s):
+
+```bash
+node <skill-dir>/tools/check-retrofit.js --spec <SPEC_FOLDER> --tests <affected-test-files>
+```
+
+Verify that all 19 checks pass:
+- `C1, C2, C3`: `qa-cases.json` schema (exact 10 keys: `approach, category, desc, expected, id, module, scenario, source, status, type`), unique IDs, valid approach words (`unit-testable`, `manual`, `out-of-scope`).
+- `T1..T9`: `## TC -> Task coverage` table format, single heading, exact rows/order as `qa-cases.json`, Counts line arithmetic, `**Maps**:` and `**Accept**:`, `n/a` for out-of-scope, every defined FR mapped in tasks.
+- `I1`: Zero dotted or lettered FR IDs (`FR-4.1-01`) remain in any `.md` file in the spec folder.
 - `M1`: `manual-verification.json` keys match manual approaches in both directions.
-- `K1..K3`: `// Covers:` markers syntax, no orphan IDs, testable cases covered.
+- `K1..K3`: `// Covers:` markers syntax, no foreign keywords, no orphan IDs, testable cases covered.
 - `R1, R2`: `coverage-report.md` required sections and total count matching `qa-cases.json`.
-- `Git Diff`: Zero production code changes (only `testID` attributes if strictly needed).
+- `Git Diff`: Verify zero production code changes (only `testID` attributes if strictly needed).
+
+If any check fails, fix the issue immediately before completing.
 
 ---
 
@@ -300,16 +332,21 @@ Statically verify that all mechanical checks pass before presenting the final re
 
 1. **Header / Banner**:
    - If triggered in Step A.4, line 1 MUST be `SUSPECT INPUT: <n>% of the QA cases are out of scope` or `CONFIRMED SCOPE: <n>% of the sheet is out of scope`.
-2. **Summary**: Files created/modified, cases in/out of scope, FRs, tasks touched/added, tests added, production test selectors (`file:line`).
-3. **Counts**: `COVERED / PARTIAL / FAILING / GAP / MANUAL / DIVERGENT / QA-SUSPECT / OUT-OF-SCOPE`, steps proven / in scope.
-4. **Retrofit Findings**:
+2. **Extraction & Scope Metrics**:
+   - `step rows R -> cases C` line, duplicates ignored count, IDs suffixed/qualified count, generated IDs count.
+   - Total `qa-cases.json` cases and schema validity.
+   - In-scope case count **with and without borderline cases**.
+   - Note if `> 25%` of cases are out of scope (even if `>= 20%` in scope).
+3. **Summary**: Files created/modified, cases in/out of scope, FRs, tasks touched/added, tests added, production test selectors (`file:line`).
+4. **Counts**: `COVERED / PARTIAL / FAILING / GAP / MANUAL / DIVERGENT / QA-SUSPECT / OUT-OF-SCOPE`, steps proven / in scope.
+5. **Retrofit Findings**:
    - DIVERGENCES: case ID, expected, what spec/code does, who decides.
    - SPEC-DRIFT: requirement ID, `file:line`, Open-item task ID.
    - QA-SUSPECT; MISLABELLED; STALE-OR-WEAK tests.
    - PRE-EXISTING FAILURES / blockers.
    - GAPS: case ID, reason, task ID.
    - ORPHANS: count, full list in `<SPEC_FOLDER>/orphans.txt`.
-5. **Command Block for User Terminal Execution** (DO NOT execute test runners or checker yourself):
+6. **Command Block for User Terminal Execution** (DO NOT execute test runners yourself):
 
 ```bash
 # 1. Run feature tests to verify suite green (ONLY the test files affected by this spec):
